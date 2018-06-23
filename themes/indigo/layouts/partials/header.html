@@ -1,0 +1,13 @@
+{{ if (.IsHome)}}
+<header class="header-home animated">
+    <a class="link" href="/about">
+        <img class="selfie" alt="{{ .Site.Params.AuthorName }}" src="{{ .Site.Params.ProfilePath }}" />
+    </a>
+
+    <h1 class="title">{{ .Site.Title }}</h1>
+    <h2 class="description">{{ .Site.Params.Info}}</h2>
+    {{ partial "social-links.html" . }}
+</header>
+{{ end }}
+
+{{ partial "nav.html" . }}

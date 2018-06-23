@@ -1,0 +1,39 @@
+{{ define "main" }}
+
+<section class="list">
+{{ $paginator := .Paginate (where .Data.Pages "Type" "post")}}
+
+{{ range $paginator.Pages }}
+    <article class="post-list">
+        <header class="entry-header">
+            <div class="entry-header-wrap">
+            {{ if ne .Params.image nil }}
+                <a href="{{ .Permalink }}" class="post-thumbnail"><img style="max-width:100%" src="{{ .Params.image }}" alt="{{ if .Params.image_alt }}{{ .Params.image_alt }}{{ else }}{{ .Title }} {{ end }}"></a>
+            {{ end }}
+                <h2 class="entry-title"><a href="{{ .URL }}" rel="bookmark" title="Permanent Link to {{ .URL }}">{{ .Title}}</a></h2>
+            </div><!-- .entry-header-wrap -->
+            <div class="entry-meta">
+                on <time class="published" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+            </div><!-- .entry-meta -->
+        </header><!-- .entry-header -->
+        <div class="entry-content">
+            {{ .Summary }}
+            {{ if .Truncated }}
+                <p class="read-more"><a href="{{ .Permalink }}" class="more-link" title="read more">read more</a></p>
+            {{ end }}
+        </div><!-- .entry-content -->
+        {{ if and (isset .Params "tags") (ne .Params.tags nil)}}
+        <footer class="entry-footer">
+            <div class="tag-links">
+                Tags:
+            {{ range .Params.tags }}
+                <a href="/tags/index.html#{{ . }}" title="Pages tagged {{ . }}" rel="tag">{{ . }}</a>
+            {{ end }}
+            </div>
+        </footer><!-- .entry-footer -->
+        {{ end }}
+    </article><!-- .post -->
+{{ end }}
+{{ partial "pagination.html" . }}
+</section>
+{{ end }}

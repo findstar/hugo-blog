@@ -1,0 +1,22 @@
+<section class="author">
+<div class="toleft">
+        <img class="selfie" src="{{ .Site.Params.ProfilePath }}" alt="{{ .Site.Params.AuthorName }}" alt="author selfie">
+</div>
+
+<div class="toright">
+<h4 class="name">{{ .Site.Params.AuthorName }}</h4>
+<p class="bio">{{ .Site.Params.Description }}</p>
+
+<div class="share">
+    <!-- Note: Only use three share links if your site width is set to large -->
+    <!-- If site width is set to normal, you may choose any two share links -->
+        <a class="twitter" href="https://twitter.com/intent/tweet?text={{ .Permalink }} - {{ .Title }} by @{{ .Site.Params.Author }}">
+    <svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg><span class="icon-twitter">Tweet</span>
+</a>
+
+    <a class="facebook" href="javascript:void(0)" onclick="window.open('https://facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href), 'facebook-share-dialog', 'width=626,height=436'); return false;">
+        <svg class="icon icon-facebook"><use xlink:href="#icon-facebook"></use></svg><span class="icon-facebook-rect">Share</span>
+    </a>
+</div>
+</div>
+</section>

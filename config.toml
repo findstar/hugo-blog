@@ -1,0 +1,98 @@
+baseurl = "https://findstar.pe.kr" # Hostname (and path) to the root.
+title = "Soo Story" # Site title.
+theme = "indigo" # Set the theme.
+languagecode = "kr" # The site’s language code.
+
+googleAnalyticsCode = "UA-10324076-5"
+
+paginate = 5 # Default number of pages per page in pagination.
+#PaginatePath = "blog/page"
+#blog/page2/
+
+canonifyurls = true # Enable to turn relative URLs into absolute.
+
+pygmentsstyle = "default" # Color-theme or style for syntax highlighting.
+pygmentscodefencesguesssyntax = true # Enable syntax guessing for code fences without specified language.
+pygmentsUseClasses=true
+disablePathToLower = true
+
+disqusShortname = "findstar"
+
+
+languageCode = "ko-kr"
+copyright = "This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License."
+
+[author]
+    name = "J.S Ahn"
+
+[params] # theme parameters
+    author = "findstar" # Author's name.
+    authorName = "J.S Ahn"
+    info = "Thoughts, stories and ideas." # Author's job title or info.
+    profilePath = "/images/profile.jpg"
+    description = "Software Developer, I love code." # Site description.
+    bio = "I want to fix the pothole that's right in front of me before I fall in."
+
+    keywords = "blog,developer,personal" # Site keywords.
+
+    disqusShortname = "findstar" # Enable or disable Disqus
+
+    # Wether you want to hide copyright and credits in the footer.
+    hideCredits = false
+    hideCopyright = false
+
+    # Custom CSS
+	custom_css = ["css/main.css"]
+	tilTags = ["TIL"]
+	postAdvanceLinks = "blog"
+
+# Social links
+[[params.social]]
+    name = "facebook"
+    weight = 1
+    url = "https://facebook.com/findstar"
+[[params.social]]
+    name = "twitter"
+    weight = 2
+    url = "https://twitter.com/findstar/"
+[[params.social]]
+    name = "github"
+    weight = 3
+    url = "https://github.com/findstar/"
+
+# Menu links
+[[menu.main]]
+    name = "Home"
+    weight = 1
+    url  = "/"
+#[[menu.main]]
+#    name = "Today I Learned"
+#    weight = 3
+#    url = "/til/"
+[[menu.main]]
+    name = "About"
+    weight = 4
+    url = "/about/"
+[[menu.main]]
+    name = "Archives"
+    weight = 5
+    url = "/tags/"
+
+[related]
+
+# Only include matches with rank >= threshold. This is a normalized rank between 0 and 100.
+threshold = 100
+
+# To get stable "See also" sections we, by default, exclude newer related pages.
+includeNewer = false
+
+# Will lower case keywords in both queries and in the indexes.
+toLower = false
+
+[[related.indices]]
+    name  = "tags"
+    weight = 50
+
+
+[taxonomies]
+  tag = "tags"

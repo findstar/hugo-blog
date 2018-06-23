@@ -1,0 +1,14 @@
+{{ define "main" }}
+<section class="list">
+{{ $paginator := .Paginate (where .Data.Pages "Params.group" "til") 5}}
+{{ range $paginator.Pages }}
+    <div class="item">
+        <a class="url" href="{{ .URL }}">
+        <aside><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time></aside>
+        <h3 class="title">{{ .Title }}</h3>
+        </a>
+    </div>
+{{ end }}
+{{ partial "pagination.html" . }}
+</section>
+{{ end }}

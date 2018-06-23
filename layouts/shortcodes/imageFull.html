@@ -1,0 +1,6 @@
+<figure class="full-width caption" {{ with .Get "border" }} style="border: 1px solid #ededed;" {{ end }}>
+    <img src="{{ .Get "src" }}" alt="{{ .Get "alt" }}"/>
+    {{ with .Get "caption" }}
+    <figcaption class="caption-text">{{ . }}</figcaption>
+    {{ end }}
+</figure>

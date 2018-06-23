@@ -1,0 +1,11 @@
+<div class="social-links">
+
+{{ with .Site.Params.social }}
+    {{ range sort .}}
+    <a class="link" data-title="{{ .name }}" href="{{ .url }}" target="_blank">
+        <svg class="icon icon-{{ .name }}"><use xlink:href="#icon-{{ .name }}"></use></svg>
+    </a>
+    {{ end }}
+{{ end }}
+
+</div>
