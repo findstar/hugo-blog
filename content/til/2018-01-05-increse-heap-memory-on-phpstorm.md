@@ -29,22 +29,22 @@ IDE를 사용하다가 보면 열어둔 Tab이 많아지면서 슬슬 Heap memor
 
 1  먼저 설정의 appearance 에서 window option의 show memory indicato를 켜자.
 
-{% include image_caption.html imageurl="/images/posts/til/2018-01-05/phpstorm_memory_indicator.png" title="phpstorm show memory indicator" %}
+{{< imageFull src="/images/posts/til/2018-01-05/phpstorm_memory_indicator.png" title="phpstorm show memory indicator" >}}
 
 
 2  그러면 에디터 우측 하단에 요렇게 메모리가 표시된다
 
-{% include image_caption.html imageurl="/images/posts/til/2018-01-05/phpstorm_show_memory.png" title="phpstorm show memory" %}
+{{< imageFull src="/images/posts/til/2018-01-05/phpstorm_show_memory.png" title="phpstorm show memory" >}}
 
 
 3  그런다음의 help 메뉴의 Edit Custom Vm Option을 선택하자
 
-{% include image_caption.html imageurl="/images/posts/til/2018-01-05/phpstorm_help_menu.png" title="phpstorm help menu" %}
+{{< imageFull src="/images/posts/til/2018-01-05/phpstorm_help_menu.png" title="phpstorm help menu" >}}
 
 
 4  이제 Custom Option을 지정하면 되는데 핵심은 `Xmx` 부분인데 maximum memory 이다.
 이걸 머신의 ram 에 따라서 늘려주자 내가 쓰는 맥북의 RAM은 16G 인데 Xmx 를 처음에는 500M 에서 2G 로 변경해줬다.
 
-{% include image_caption.html imageurl="/images/posts/til/2018-01-05/phpstorm_custom_vm_option.png" title="phpstorm custom vm option" %}
+{{< imageFull src="/images/posts/til/2018-01-05/phpstorm_custom_vm_option.png" title="phpstorm custom vm option" >}}
 
 이제 IDE를 재시작하면 늘어난 memory 를 indicator 에서 확인가능하고, 버벅거림이 훨~~~씬 줄어들었다.

@@ -106,7 +106,7 @@ windows:
 
 저렇게 구성한 파일을 web-server.yml로 저장하고 itermocil web-server 라고 입력하면 20대의 iterm panel 등장하는데, 제법 멋져보인다.
 
- {% include image_caption.html imageurl="/images/posts/itermocil.gif" title="example useage" caption="example" %}
+{{< imageFull src="/images/posts/itermocil.gif" title="example usage" border="true" >}}
 
 물론 나와 같이 itermocil을 사용하여 다수의 서버에 접속하길 원하는 사람이 얼마나 되는지는 알 수 없지만,
 

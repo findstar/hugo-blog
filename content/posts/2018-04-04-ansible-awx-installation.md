@@ -88,10 +88,10 @@ docker-compose up -d
 ```
 
 * 이제 웹 브라우저로 접근해보자
-{% include image_caption.html imageurl="/images/posts/ansible-awx/awx_welcome_screen.png" title="welcome awx" caption="welcome" %}
+{{< imageFull src="/images/posts/ansible-awx/awx_welcome_screen.png" title="welcome awx" border="true" >}}
 
 * 초기 접속 계정은 `admin/password` 이다.
-{% include image_caption.html imageurl="/images/posts/ansible-awx/awx-main-dashboard.png" title="awx dashboard" caption="dashboard" %}
+{{< imageFull src="/images/posts/ansible-awx/awx-main-dashboard.png" title="awx dashboard" border="true" >}}
 
 여기까지하면, AWX는 설치가 완료된것이다. 이제 project를 설정해보자.
 
