@@ -15,7 +15,7 @@
 <div class="post-tags">
     <i class="fa fa-tags" title="태그"></i>
     {{ range .Params.tags }}
-        <a class="item" href="/tags/#{{ . }}">{{ . }}</a>
+        <a class="item" href="{{ "/tags/#" | relLangURL}}{{ . | lower | urlize }}">{{ . }}</a>
     {{ end }}
 </div>
 {{ end }}

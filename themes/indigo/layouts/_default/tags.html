@@ -4,7 +4,7 @@
     <h1 class="title">Tags</h1>
 
     {{ range $taxonomyname, $taxonomy := .Site.Taxonomies.tags}}
-        <a class="item" href="{{ "/tags/#" | relLangURL}}{{ $taxonomyname | urlize }}"> {{ $taxonomyname }}</a>
+        <a class="item" href="{{ "/tags/#" | relLangURL}}{{ $taxonomyname | lower | urlize }}"> {{ $taxonomyname }}</a>
     {{ end }}
 
 </section>
