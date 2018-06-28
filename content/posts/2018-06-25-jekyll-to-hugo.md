@@ -10,7 +10,7 @@ url: /2018/06/25/jekyll-to-hugo-thoughts
 type: post
 ---
 
-사용하던 github pages 기반 툴을 `jekyll` 에서 `hugo` 로 Elasticsearch의 버전업을 지원하기 위해서 logstash 와 filebeat를 새롭게 설치하고 설정해보았다. 진행한 작업 내용을 정리 해보았다.
+사용하던 github pages 기반 툴을 `jekyll` 에서 `hugo` 로 전환해보았다. 아래는 그 과정에서 느낀 점을 정리해보았다.
 
 <!--more-->
 
