@@ -3,8 +3,6 @@ title = "Soo Story" # Site title.
 theme = "indigo" # Set the theme.
 languagecode = "kr" # The site’s language code.
 
-googleAnalyticsCode = "UA-10324076-5"
-
 paginate = 5 # Default number of pages per page in pagination.
 #PaginatePath = "blog/page"
 #blog/page2/
@@ -45,6 +43,7 @@ copyright = "This work is licensed under a Creative Commons Attribution-ShareAli
 	custom_css = ["css/main.css"]
 	tilTags = ["TIL"]
 	postAdvanceLinks = "blog"
+	googleAnalyticsCode = "UA-10324076-5"
 
 # Social links
 [[params.social]]
