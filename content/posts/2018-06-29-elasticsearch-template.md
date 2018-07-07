@@ -1,6 +1,6 @@
 ---
 date: '2018-06-29 20:53:20'
-group: til
+group: blog
 tags:
 - ElasticSearch
 - template
