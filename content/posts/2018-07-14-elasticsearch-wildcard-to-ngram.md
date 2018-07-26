@@ -436,5 +436,8 @@ curl -s http://my-log-es-cluster-host:9200/log-2018.07.14/_search?pretty -XPOST 
 ## 결론
 
 ElasticSearch 쿼리를 작성하면서 wildcard 를 사용할 때 RDBMS 의 `like "%keyword%"` 와 같이 사용하고자 한다면 `ngram` 을 사용한 tokenize 를 고려해보는게 좋다.
-wildcard 는 term(token) level query 이고, 이 차이점을 잘 알아 둘 필요가 있다. 더불어 `ngram` 과 `match_phrase` 쿼리를 사용하면 긴 단어나 문장을 검색 키워드로 조회하더라도
-원하는 문서를 잘 찾을 수 있다(콘텐츠 검색의 경우).
+wildcard 는 term(token) level query 이고, 이 차이점을 잘 알아 둘 필요가 있다. 더불어 `ngram` 과 `match_phrase` 쿼리를 사용하면 긴 단어나 문장을 검색 키워드로 조회하더라도 원하는 문서를 잘 찾을 수 있다(콘텐츠 검색의 경우).
+
+### 덧 붙이는 말
+
+테스트와 더불어 [강진우님](https://brunch.co.kr/@alden)님께서 관련 내용을 함께 고민해주고 도움을 주셨다.
