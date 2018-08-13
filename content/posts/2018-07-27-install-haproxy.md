@@ -6,7 +6,7 @@ tags:
 - haproxy
 - install
 - "haproxy 1.8"
-title: Haproxy 설치하기
+title: Haproxy 설치해서 로드 밸런서로 활용하기
 url: /2018/07/27/install-haproxy
 type: post
 ---
