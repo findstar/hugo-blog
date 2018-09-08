@@ -913,7 +913,9 @@ pre code {
 
 .entry-header-wrap {
   overflow: hidden;
-  position: relative; }
+  position: relative;
+  min-height:350px;
+}
 
 .post-thumbnail img {
   width: 100%;
@@ -1125,6 +1127,11 @@ a.archive-top-link {
     font-size: 28px;
     padding: 20px 15px 15px 20px; } }
 @media only screen and (max-width: 480px) {
+
+  .entry-header-wrap {
+    min-height:150px;
+  }
+
   h3, .entry-title {
     font-size: 20px; }
 
