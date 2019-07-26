@@ -5,7 +5,7 @@ image: /images/posts/openjdk/openjdk-logo.png
 tags:
 - "openjdk"
 - "brew cask"
-title: "homebrew로 opendjk 설치하기 "
+title: "homebrew로 openjdk 설치하기 "
 url: /2019/01/20/install-openjdk-by-homebrew
 type: post
 ---
