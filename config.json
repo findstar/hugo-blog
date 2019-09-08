@@ -1,0 +1,88 @@
+{
+  "baseurl": "https://findstar.pe.kr",
+  "title": "Soo Story",
+  "theme": "indigo",
+  "languagecode": "kr",
+  "paginate": 5,
+  "canonifyurls": true,
+  "pygmentsstyle": "default",
+  "pygmentscodefencesguesssyntax": true,
+  "pygmentsUseClasses": true,
+  "disablePathToLower": true,
+  "disqusShortname": "findstar",
+  "languageCode": "ko-kr",
+  "copyright": "This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.",
+  "author": {
+    "name": "J.S Ahn"
+  },
+  "params": {
+    "author": "findstar",
+    "authorName": "J.S Ahn",
+    "info": "Thoughts, stories and ideas.",
+    "profilePath": "/images/profile.jpg",
+    "description": "Software Developer, I love code.",
+    "bio": "I want to fix the pothole that's right in front of me before I fall in.",
+    "keywords": "blog,developer,personal",
+    "disqusShortname": "findstar",
+    "hideCredits": false,
+    "hideCopyright": false,
+    "custom_css": [
+      "css/main.css"
+    ],
+    "tilTags": [
+      "TIL"
+    ],
+    "postAdvanceLinks": "blog",
+    "googleAnalyticsCode": "UA-10324076-5",
+    "social": [
+      {
+        "name": "facebook",
+        "weight": 1,
+        "url": "https://facebook.com/findstar"
+      },
+      {
+        "name": "twitter",
+        "weight": 2,
+        "url": "https://twitter.com/findstar"
+      },
+      {
+        "name": "github",
+        "weight": 3,
+        "url": "https://github.com/findstar"
+      }
+    ]
+  },
+  "menu": {
+    "main": [
+      {
+        "name": "Home",
+        "weight": 1,
+        "url": "/"
+      },
+      {
+        "name": "About",
+        "weight": 4,
+        "url": "/about/"
+      },
+      {
+        "name": "Archives",
+        "weight": 5,
+        "url": "/tags/"
+      }
+    ]
+  },
+  "related": {
+    "threshold": 100,
+    "includeNewer": false,
+    "toLower": false,
+    "indices": [
+      {
+        "name": "tags",
+        "weight": 50
+      }
+    ]
+  },
+  "taxonomies": {
+    "tag": "tags"
+  }
+}
