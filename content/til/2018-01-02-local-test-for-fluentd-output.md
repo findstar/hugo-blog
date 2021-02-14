@@ -1,7 +1,7 @@
 ---
 title: Fluentd 를 로컬에서 테스트 해보는 방법
 date: '2018-01-02'
-group: til
+layout: til
 tags:
     - fluentd
 aliases:

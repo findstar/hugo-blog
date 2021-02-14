@@ -17,7 +17,8 @@ Elasticsearch의 버전업을 지원하기 위해서 logstash 와 filebeat를 �
 
 <!--more-->
 
-### 먼저 서버 구성은 다음과 같다.
+## 서버 구성
+먼저 서버 구성은 다음과 같다.
 - ElasticSearch 클러스터가 별도로 존재
 - LogStash 1대
 - 다수의 웹서버에 각각 Filebeat 를 설치.

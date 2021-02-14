@@ -21,7 +21,7 @@ ElasticSearch 에서 index 의 alias 를 변경하는 방법을 알아보았다.
 
 <!--more-->
 
-#### Alias 확인
+## Alias 확인
 
 먼저 ElasticSearch 클러스터에 `/_alias` 로 접속하면 현재 생성된 인덱스 들과 연결된 alias 를 확인할 수 있다.
 
