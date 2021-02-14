@@ -1,0 +1,16 @@
+{{ if .Site.Params.latest_tags }}
+<section>
+    <hr class="hidden-sm hidden-xs">
+    <h5>LATEST TAGS</h5>
+    <div class="tags">
+        {{ $taxo := "tags" }}
+        {{ with ($.Site.GetPage (printf "/%s" $taxo)) }}
+            {{ range first 10 .Pages.ByWeight }}
+            <a href="{{ .Permalink }}">{{ .Title}}</a>
+            {{ end }}
+        {{ end }}
+
+    </div>
+    <a href="/tags">...more</a>
+</section>
+{{ end }}

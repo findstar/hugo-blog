@@ -1,7 +1,7 @@
 {
   "baseurl": "https://findstar.pe.kr",
   "title": "Soo Story",
-  "theme": "indigo",
+  "theme": "cleanwhite",
   "languagecode": "kr",
   "paginate": 5,
   "canonifyurls": true,

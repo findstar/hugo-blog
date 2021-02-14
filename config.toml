@@ -1,0 +1,79 @@
+baseurl = "https://findstar.pe.kr"
+title = "Soo Story"
+theme = "cleanwhite"
+languageCode = "ko-kr"
+disqusShortname = "findstar"
+googleAnalytics = "UA-10324076-5"
+preserveTaxonomyNames = true
+paginate = 5 #frontpage pagination
+hasCJKLanguage = true
+
+[outputs]
+home = ["HTML", "RSS"]
+
+[params]
+  thumbnail = "/images/bg.jpg"
+  header_image = "/images/bg.jpg"
+  SEOTitle = "findstar dev story "
+  bio = "I want to fix the pothole that's right in front of me before I fall in."
+
+  description = "Software Developer, I love code."
+  keyword = "blog | developer | personal"
+  slogan = "Thoughts, stories and ideas."
+
+  image_404 = "img/404-bg.jpg"
+  title_404 = "페이지를 찾을 수 없습니다. :("
+  omit_categories = false
+
+  # leancloud storage for page view counter
+  page_view_conter = false
+  leancloud_app_id = ""
+  leancloud_app_key = ""
+
+  # algolia site search
+  algolia_search = false
+
+  # Sidebar settings
+  sidebar_about_description = "Software Developer, I love code."
+  sidebar_avatar = "/images/profile.jpg"      # use absolute URL, seeing it's used in both `/` and `/about/`
+
+  featured_tags = true
+  featured_condition_size = 0
+
+  latest_tags = true
+
+  #Enable wechat pay & alipay to allow readers send reward money if they like the articles
+  reward = false
+
+  friends = false
+  bookmarks = false
+  about_me = true
+
+  # Include any custom CSS and/or JS files, url or relative to /static folder
+  custom_css = ["css/findstar-custom.css"]
+#  custom_css = ["css/lightbox.css", "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css", "css/main.css"]
+#  custom_js = ["js/lightbox.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js", "js/main.js"]
+
+  [params.social]
+  rss            = true
+  facebook       = "https://facebook.com/findstar"
+  twitter        = "https://twitter.com/findstar"
+  github         = "https://github.com/findstar"
+
+  [[params.addtional_menus]]
+  title =  "ABOUT"
+  href =  "/about/"
+  [[params.addtional_menus]]
+  title =  "ARCHIVES"
+  href =  "/tags/"
+
+[markup]
+  [markup.tableOfContents]
+    endLevel = 2
+    startLevel = 1
+  [markup.highlight]
+    style = "dracula"
+
+[taxonomies]
+tag = "tags"
+#category= "categories"

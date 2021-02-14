@@ -1,0 +1,28 @@
+body {
+    font-family: "Apple SD Gothic Neo", AppleSDGothicNeo, "Malgun Gothic", "맑은 고딕", 돋움, dotum, arial, sans-serif;
+}
+.site-heading a {
+    color:white;
+    text-decoration: none;
+}
+.about img { width:50%}
+.post-preview figure.post-list-thumb {
+    float: right;
+    overflow: hidden;
+    max-width: 148px;
+    margin-left: 40px;
+}
+
+.post-preview span.post-list-summary {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.9375em;
+    line-height: 1.6;
+    color: #666;
+}
+
+.post-preview>.post-meta {margin-top:5px;}
+
+.post-list-summary h1{font-size:18px}
