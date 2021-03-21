@@ -8,14 +8,17 @@ tags:
 title: "[리뷰] Kmooc-Microservice 설계 및 구현 수강 후기"
 url: /2019/04/21/kmooc-review-microservice-design-and-implementation
 type: post
+summary: "우연찮게 [kmooc] Microservice 설계 및 구현 강의를 신청해서 듣게 되었다.
+  큰 기대를 하지 않고 시작했는데 예상보다 개념을 정리하는데 도움이 되었기에, 수강 후기를 작성해보았다."
 ---
+# [kmooc] Microservice 설계 및 구현 수강 후기
 
-우연찮게 [[kmooc] Microservice 설계 및 구현](http://www.kmooc.kr/courses/course-v1:KAISTk+2018_K14+CS490/course/) 강의를 신청해서 듣게 되었다. 
-큰 기대를 하지 않고 시작했는데 예상보다 개념을 정리하는데 도움이 되었기에, 수강 후기를 작성해보았다.
+## 배경 
 
-<!--more-->
+우연찮게 [[kmooc] Microservice 설계 및 구현](http://www.kmooc.kr/courses/course-v1:KAISTk+2018_K14+CS490/course/) 강의를 신청해서 듣게 되었다.
+큰 기대를 하지 않고 시작했는데 예상보다 개념을 정리하는데 도움이 되었다. 
 
-## kmooc?
+# kmooc?
 
 [kmooc](http://www.kmooc.kr)는 Korean MOOC(Massive, Open, Online, Course의 줄임말로 '오픈형 온라인 학습 과정') 의 약어이다. 
 2015년도 부터 시작했다고 하는데, 주요 강좌들은 대학과 연계한 내용이 많아 보였다. 주로 교수님들의 온라인 강의를 수강할 수 있도록 정리되어 있었다. 

@@ -12,11 +12,7 @@
         {{ end }}
 
         <span class="post-list-summary">
-        {{ with .Description }}
-            {{ . }}
-        {{ else }}
-            {{ .Summary}}
-       {{ end }}
+            <p>{{ .Summary}}</p>
         </span>
         <p class="post-meta">
         {{ .Date.Format "2006-01-02" }}

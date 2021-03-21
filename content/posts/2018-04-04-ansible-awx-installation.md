@@ -10,15 +10,19 @@ tags:
 title: Ansible AWX 를 설치해보기
 url: /2018/04/04/ansible-awx-installation
 type: post
+summary: "Redhat에서 내놓은 Ansible Tower 의 오픈소스 Ansible AWX를 살펴보았다."
 ---
 
+# Ansible AWS 설치해보기
+
+## 배경
 
 ansible을 팀에서 사용하면서, 몇가지 `이런게 있었으면` 하는 점이 있었는데, 그 중하나가 바로 `GUI 환경`이다.
 물론 CLI 콘솔 상에서 playbook을 실행하는데는 아무 문제가 없고 잘 사용하고 있지만, GUI에서도 보기 쉽게 playbook을 실행하고 또한 누가 언제 playbook을 실행했는지 기록되면 좋겠다는 바램이 있었다.
 `Ansible Tower`는 이러한 바램을 해소시켜 줄 수 있는 대안이라고 생각이 되지만, 라이센스 비용이 비싸기로 유명(?) 해서, 포기하고 있었는데.
 Redhat에서 [Ansible Tower 의 오픈소스 버전으로 Ansible AWX를 발표했다!](https://www.ansible.com/products/awx-project) (대인배...Redhat.)
 
-<!--more-->
+## 특징
 
 AWX(Towner의 오픈소스 버전)는 stanalone으로 구동하며, job(playbook) 에 대한 수행 history, 사용자별 권한제어, GUI, 스케줄링을 통한 실행 기능등을 제공한다.
 
@@ -42,6 +46,8 @@ AWX(Towner의 오픈소스 버전)는 stanalone으로 구동하며, job(playbook
 1.0.3 부터 docker를 통한 설치가 좀 더 간편해졌기 때문에, 이 버전부터는 그냥 docker 구성으로 설치를 진행했다.
 AWX에서는 완성된 `docker-compose.yml` 파일을 제공해주지 않기 때문에,
 각종 설정을 구성하고, 자체적으로 제공되는 playbook을 실행하면 docker-compose 파일이 생성되는 구조이다. 다음은 `Centos 7.4` 에서 AWX의 설치 과정을 기록한 것이다.
+
+## 설치
 
 * 필요한 package 설치
 ```

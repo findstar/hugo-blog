@@ -7,12 +7,9 @@ tags:
 title: "curl 로 측정하는 dns lookup time"
 url: /2021/03/15/curl-cnd-lookup-time
 type: post
+summary: "k8s 클러스터에서 서비스를 구동하던중 서비스 사이의 dns lookup time 을 확인해야할 필요가 있었다.
+  curl 에서 dns lookup time 을 확인하는 방법을 살펴보았다. "
 ---
-
-k8s 클러스터에서 서비스를 구동하던중 서비스 사이의 dns lookup time 을 확인해야할 필요가 있었다. 
-curl 에서 dns lookup time 을 확인하는 방법을 살펴보았다. 
-
-<!--more-->
 
 # curl 로 dns lookup time 까지 얼마나 걸리는지 확인하기
 

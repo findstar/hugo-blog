@@ -5,17 +5,11 @@ image: /images/posts/kubernetes/Kubernetes-logo.png
 tags:
 - "kubernetes"
 - "nginx regexp"
-title: "nginx ingress 에서 정규표현식 경로 지정하는 방법"
+title: "nginx ingress 에서 정규표현식 경로 지정하기"
 url: /2021/03/21/kubernetes-nginx-ingress-controller-regexp-path
 type: post
+summary: "k8s 에서 nginx ingress controller 의 경로를 지정할 때 정규표현식을 사용해서 등록하는 방법을 알아보았다." 
 ---
-
-k8s 에서 nginx ingress controller 의 경로를 지정할 때 정규표현식을 
-사용해서 등록하는 방법을 알아보았다.
-
-
-<!--more-->
-
 # nginx ingress controller 에서 regexp location 지정하는 방법
 
 ## 배경

@@ -10,13 +10,10 @@ title: Haproxy에서 acl을 log에 기록하기
 url: /2019/09/08/haproxy-acl-logging
 type: post
 draft: false
+summary: "Reverse Proxy 로 활용중인 haproxy 를 운영하면서 한가지 불편한 점이 있었는데,
+  설정을 통해서 정의한 custom variable(ACL) 을 log에 기록하는 방법을 알기가 어려웠다는 점이었다.
+  cfg 파일에 acl 로깅을 활성화 하는 방법에 대해서 알아보았다. "
 ---
-
-Reverse Proxy 로 활용중인 haproxy 를 운영하면서 한가지 불편한 점이 있었는데,
-설정을 통해서 정의한 custom variable(ACL) 을 log에 기록하는 방법을 알기가 어려웠다는 점이었다. 
-cfg 파일에 acl 로깅을 활성화 하는 방법에 대해서 알아보았다. 
-
-<!--more-->
 
 ## Haproxy 의 ACL 설정
 

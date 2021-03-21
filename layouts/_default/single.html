@@ -45,10 +45,14 @@
                 post-container">
 
                 {{ if not (eq (.Param "showtoc") false) }}
-                <header>
-                    <h2>목차</h2>
-                </header>
-                {{.TableOfContents}}
+                <div class="toc">
+                    <details open="">
+                        <summary accesskey="c" title="(Alt + C)">
+                            <div class="details">Table of Contents</div>
+                        </summary>
+                        {{.TableOfContents}}
+                    </details>
+                </div>
                 {{ end }}
                 {{ .Content }}
 

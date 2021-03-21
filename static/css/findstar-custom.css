@@ -13,6 +13,10 @@ body {
     margin-left: 40px;
 }
 
+/*.post-preview figure.post-list-thumb img{*/
+/*    margin : 0 auto;*/
+/*}*/
+
 .post-preview span.post-list-summary {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -26,3 +30,49 @@ body {
 .post-preview>.post-meta {margin-top:5px;}
 
 .post-list-summary h1{font-size:18px}
+
+.toc {
+    margin: 0 2px 40px;
+    border: 1px solid #eee;
+    background: #eee;
+    border-radius: 8px;
+    padding: .4em;
+}
+
+.toc .details {
+    display: inline;
+    font-weight: 500;
+}
+
+.toc summary:focus {
+    outline: 0;
+}
+
+.toc details[open] summary {
+    cursor: zoom-out;
+}
+
+.toc details summary {
+    cursor: zoom-in;
+    margin-inline-start: 20px;
+}
+
+.toc details[open] summary {
+    cursor: zoom-out;
+}
+
+.toc details summary {
+    cursor: zoom-in;
+    margin-inline-start: 20px;
+}
+
+.toc .details {
+    display: inline;
+    font-weight: bold;
+}
+
+.toc a { color:#404040;}
+
+.toc details ul {
+    margin-bottom:0;
+}

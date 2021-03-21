@@ -9,12 +9,11 @@ tags:
 title: "[북 리뷰] 쿠버네티스 시작하기(kubernetes up & running)"
 url: /2019/03/03/book-review-kubernetes-up-running
 type: post
+summary: "쿠버네티스 스터디에서 학습을 위해서 읽은 `쿠버네티스 시작하기(원서 kubernetes up & running)`의 리뷰이다. 쿠버네티스 스터디로는 두번째인데, 첫번째 스터디에서 마무리까지 참가하지 못해서
+  못내 아쉬운 마음에 팀 동료들과 두번째 스터디를 다시 열었다. 에이콘에서 출간한 번역서로 원서는 O-REILLY가 출판사이다." 
 ---
 
-쿠버네티스 스터디에서 학습을 위해서 읽은 "쿠버네티스 시작하기(원서 kubernetes up & running)"의 리뷰이다. 쿠버네티스 스터디로는 두번째인데, 첫번째 스터디에서 마무리까지 참가하지 못해서
-못내 아쉬운 마음에 팀 동료들과 두번째 스터디를 다시 열었다. 에이콘에서 출간한 번역서로 원서는 O-REILLY가 출판사이다.
-
-<!--more-->
+# [북 리뷰] 쿠버네티스 시작하기(kubernetes up & running)
 
 ## 책 소개
 

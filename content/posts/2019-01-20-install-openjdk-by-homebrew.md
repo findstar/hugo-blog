@@ -8,11 +8,10 @@ tags:
 title: "homebrew로 openjdk 설치하기 "
 url: /2019/01/20/install-openjdk-by-homebrew
 type: post
+summary : "사용하던 노트북을 신형 맥북프로로 변경하면서 이런저런 개발 환경을 다시 구성하게 되었다. 마침 OpenJDK로 jdk 환경을 변경해보고자 하였는데 이때 homebrew로 OpenJDK 를 설치해보았다."
 ---
 
-사용하던 노트북을 신형 맥북프로로 변경하면서 이런저런 개발 환경을 다시 구성하게 되었다. 마침 OpenJDK로 jdk 환경을 변경해보고자 하였는데 이때 homebrew로 OpenJDK 를 설치해보았다.
-
-<!--more-->
+# homebrew로 openjdk 설치하기
 
 ## OpenJDK
 
