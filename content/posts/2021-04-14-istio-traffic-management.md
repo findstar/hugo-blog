@@ -1,7 +1,7 @@
 ---
 date: '2021-04-14 20:55:12 +09:00'
 group: blog
-image: /images/posts/istio/istio-logo.png
+image: /images/posts/istio/istio-and-envoy.png
 tags:
 - "istio"
 - "traffic management"
