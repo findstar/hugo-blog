@@ -1,0 +1,20 @@
+{{ if .Params.thumbnail }}
+<meta property="twitter:image" content="{{ .Site.BaseURL }}{{ .Params.thumbnail }}" />
+{{ else }}
+<meta property="twitter:image" content="{{ .Site.BaseURL }}{{ .Site.Params.header_image }}" />
+{{ end }}
+{{ if .Params.title }}
+<meta property="twitter:title" content="{{ .Params.title }}" />
+{{ else }}
+<meta property="twitter:title" content="{{ .Site.Params.title }}" />
+{{ end }}
+{{ if .Params.description }}
+<meta property="twitter:description" content="{{ .Params.description }}" />
+{{ else }}
+<meta property="twitter:description" content="{{ .Site.Params.description }}" />
+{{ end }}
+{{ if .Params.summary }}
+<meta property="twitter:card" content="{{ .Params.summary }}" />
+{{ else }}
+<meta property="twitter:card" content="summary" />
+{{ end }}

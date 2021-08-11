@@ -1,0 +1,11 @@
+{{ if .Params.title }}
+<meta property="article:title" content="{{ .Params.title }}" />
+{{ end }}
+{{ if .Params.description }}
+<meta property="article:description" content="{{ .Params.description }}" />
+{{ end }}
+{{ if .Params.tags }}
+{{ range .Params.tags -}}
+<meta property="article:tag" content="{{ . }}" />
+{{ end }}
+{{ end }}

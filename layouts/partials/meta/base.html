@@ -1,0 +1,11 @@
+{{ if .Params.title }}
+<meta name="title" content="{{ .Params.title }}" />
+{{ else }}
+<meta name="title" content="{{ .Site.Params.title }}" />
+{{ end }}
+{{ if .Params.description }}
+<meta name="description" content="{{ .Params.description }}">
+{{ else }}
+<meta name="description" content="{{ .Site.Params.description }}">
+{{ end }}
+<meta name="keyword"  content="{{ .Site.Params.keyword }}">
