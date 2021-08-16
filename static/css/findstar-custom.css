@@ -6,6 +6,14 @@ body {
     text-decoration: none;
 }
 .about img { width:50%}
+/**
+모바일에서는 포스트 썸네일을 글 목록에서 노출하지 않음
+ */
+@media only screen and (max-width: 600px) {
+    .post-preview figure.post-list-thumb {
+        display:none;
+    }
+}
 .post-preview figure.post-list-thumb {
     float: right;
     overflow: hidden;
