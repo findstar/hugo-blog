@@ -26,7 +26,7 @@ Haproxy 는 Load balancer 로 활용할 수 있으며, 다양한 설정이 가�
 2. 필요한 yum 패키지들을 설치해주자.
 
     ```
-    yum install gcc openssl pcre-static pcre-devel systemd-devel
+    yum install gcc openssl openssl-devel pcre-static pcre-devel systemd-devel
     ```
 
 ### Haproxy 다운로드 & 컴파일
