@@ -17,7 +17,7 @@ summary: "새롭게 시작한 서비스를 1년을 채우지 못하고 종료했
 1년동안 서비스를 개발하며 잠도 못자고 코드를 써내려가던 일부터, 치명적인 버그로 씨름하던 일까지 머리속에 스쳐지나간다.
 아쉬운 마음에 넋두리를 기록해 보았다. 
 
-{{< imageFull src="/images/posts/one-failed-service-developer/mm-notfound.png" title="not found" border="false" caption="종료한 서비스는 사이트에 연결할 수 없습니다.">}}
+{{< imageFull src="/images/posts/beautiful-goodbye-mm/mm-notfound.png" title="not found" border="false" caption="종료한 서비스는 사이트에 연결할 수 없습니다.">}}
 
 ### 왜 서비스를 종료할까? 
 
@@ -30,7 +30,7 @@ summary: "새롭게 시작한 서비스를 1년을 채우지 못하고 종료했
 그렇다! **우리는 목표달성에 실패한 것이다.** 시장의 상황이 예상보다 좋지 않았건, 사용자들을 위한 기능이 부족했건, 또는 마케팅의 미스매치로 충분히 널리 알리지 못했건
 우리 서비스는 목표를 달성하지 못했고 실패한 서비스로 이름을 올리게되었다.
 
-{{< imageFull src="/images/posts/one-failed-service-developer/rip.png" title="closing" border="false" caption="">}}
+{{< imageFull src="/images/posts/beautiful-goodbye-mm/rip.png" title="closing" border="false" caption="">}}
 
 
 ## 종료 준비 - 어떻게 해야 사용자들에게 잘(?!) 종료하겠다고 이야기 해야할까?
@@ -61,7 +61,7 @@ summary: "새롭게 시작한 서비스를 1년을 채우지 못하고 종료했
 타운홀 행사가 진행되기 전까지 혹여나 속상한 마음에 덜컥 화를 내거나 원망하시는 분이 있으면 어떻게 대응해야할까 걱정하고 있었는데
 너무나 부질없는 일이었다. 참석해주신 분들은 서비스를 잘 만들어 주어서 고맙다고, 그동안 수고했다며 우리팀에게 인사를 건네주셨다.
 
-{{< imageFull src="/images/posts/one-failed-service-developer/20220420-214812_mm.png" title="farewall" border="false" caption="타운홀 마지막 순간">}}
+{{< imageFull src="/images/posts/beautiful-goodbye-mm/20220420-214812_mm.png" title="farewall" border="false" caption="타운홀 마지막 순간">}}
 
 ## 서비스는 사용자들의 발자취를 먹고 산다. 
 
