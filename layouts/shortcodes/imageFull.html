@@ -1,5 +1,5 @@
 <figure class="full-width caption" {{ if .Get "border" | eq "true" }} style="border: 1px solid #ededed;" {{ else}} {{ end }}>
-    <img src="{{ .Get "src" }}" alt="{{ .Get "title" }}"/>
+    <img src="{{ .Get "src" }}" alt="{{ .Get "title" }}" {{ if .Get "imageBorder" | eq "true" }} style="border: 1px solid #ededed;" {{ else}} {{ end }}/>
     {{ with .Get "caption" }}
     <figcaption class="caption-text">{{ . }}</figcaption>
     {{ end }}
