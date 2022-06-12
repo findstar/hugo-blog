@@ -128,7 +128,7 @@ pod 가 실행되어 rediness 가 success 가 되더라도 바로 트래픽을 �
 pod 가 종료될 때 즉각적으로 pod를 제거해버리면, 처리하고 있던 응답을 완료하기 전에 프로세스가 종료되어 사용자가 5XX 에러를 볼 수 있다. 이를 막기 위해서 
 `preStop` 설정을 추가해보자.
 
-### Step 5 `preStop` 설정 추가
+### Step 4 `preStop` 설정 추가
 
 ```yaml
           ports:
