@@ -1,5 +1,5 @@
-{{ if .Params.thumbnail }}
-<meta property="twitter:image" content="{{ .Site.BaseURL }}{{ .Params.thumbnail }}" />
+{{ if .Params.image }}
+<meta property="twitter:image" content="{{ .Site.BaseURL }}{{ .Params.image }}" />
 {{ else }}
 <meta property="twitter:image" content="{{ .Site.BaseURL }}{{ .Site.Params.header_image }}" />
 {{ end }}
