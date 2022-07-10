@@ -148,3 +148,9 @@ OpenJDK 64-Bit Server VM (build 17.0.2+8-86, mixed mode, sharing)
 3. 컨테이너 환경에서는 메모리 할당이 가변적이기 때문에 `MaxRAMPercentage` 옵션을 사용하는 것이 좋다. 단 jdk 버전이 낮으면 버그로 동작하지 않는다.
 
 **리소스와 메모리 설정을 잘 지정하여 의도하지 않게 Pod 가 restart 되거나, 메모리가 남아 있음에도 활용하지 못하고 성능이 저하되는 경우를 겪지 않도록 주의하자.**
+
+## 참고자료 
+- [누가 Kubernetes 클러스터에 있는 나의 사랑스러운 Prometheus 컨테이너를 죽였나!](https://engineering.linecorp.com/ko/blog/prometheus-container-kubernetes-cluster/)
+- [quality of service and oom in kubernetes](https://ops.tips/notes/kubelet-qos-and-oom/)
+- [파드에 대한 서비스 품질(QoS) 구성](https://kubernetes.io/ko/docs/tasks/configure-pod-container/quality-service-pod/)
+- [OpenJDK MaxRAMPercentage on a machine with very large amount of memory](https://stackoverflow.com/questions/58119322/openjdk-maxrampercentage-on-a-machine-with-very-large-amount-of-memory)
