@@ -66,7 +66,7 @@ M1 프로세서의 좋은점은 귀가 따갑게 들어왔던지라 "역시 조�
     {{< imageFull src="/images/posts/new-macbook/paw.png" title="paw" border="false" caption="paw">}}
 11. **[eul](https://github.com/gao-sun/eul)** : 맥북의 시스템 자원 모니터링 툴이다. 에전에는 stats를 쓰다가 지금은 eul을 쓰고 있다. 이런 앱은 워낙 종류가 많지만 한글이 잘 나와서 애용하고 있다.
     {{< imageFull src="/images/posts/new-macbook/eul.jpg" title="eul" border="false" caption="홈페이지 스크린샷이라 한글이 없지만 한글 메뉴 잘 나온다.">}}
-12. **[Stem](https://store.steampowered.com/)** : 이건 맥이라도 거부할 수가 없다.
+12. **[Steam](https://store.steampowered.com/)** : 이건 맥이라도 거부할 수가 없다.
     {{< imageFull src="/images/posts/new-macbook/steam.jpg" title="steam" border="false" caption="맥북이라도 스팀은 피할 수 없다.">}}
 
 ## 터미널 환경 셋팅

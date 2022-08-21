@@ -15,6 +15,13 @@ body {
         display:none;
     }
 }
+
+@media only screen and (min-width: 768px) {
+    .intro-header .site-heading, .intro-header .post-heading, .intro-header .page-heading {
+        padding: 80px 0 60px;
+    }
+}
+
 .post-preview figure.post-list-thumb {
     float: right;
     overflow: hidden;
@@ -25,6 +32,10 @@ body {
 /*.post-preview figure.post-list-thumb img{*/
 /*    margin : 0 auto;*/
 /*}*/
+
+.intro-header .post-heading h1 {
+    word-break: keep-all;
+}
 
 .post-preview span.post-list-summary {
     display: block;

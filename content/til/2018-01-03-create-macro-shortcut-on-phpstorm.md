@@ -14,12 +14,12 @@ title: PHPStorm 에서 매크로 단축키를 지정하는 방법
 url: /2018/01/03/create-macro-shortcut-on-phpstorm
 type: post
 ---
-
-
 # 1월 03일 (수) TIL
 - 참고 매뉴얼 : [Jetbrains Recording Macros](https://www.jetbrains.com/help/idea/recording-macros.html)
 
 phpstorm의 버전을 올렸는데 지정해놓은 macro key mapping 이 이상해졌다. 지우고 새로 만들려니 macro 설정 하는 방법을 까먹어서 기억을 더듬어서 다시 한번 정리해본다.
+
+<!--more-->
 
 1 먼저 phpstorm 의 Edit -> Macros 를 살펴보자.
 
