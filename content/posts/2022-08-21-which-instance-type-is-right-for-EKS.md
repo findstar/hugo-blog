@@ -1,8 +1,8 @@
 ---
 date: '2022-08-21 16:13:22 +09:00'
 group: blog
-image: /images/posts/eks/aws-eks.jpg
-tags: ["eks", "instance type"]
+image: /images/posts/aws/eks/aws-eks.jpg
+tags: ["aws", "eks", "instance type"]
 title: "EKS를 구축할 때 어떤 인스턴스 타입이 적합할까?"
 url: /2022/08/21/which-instance-type-is-right-for-EKS
 type: post
@@ -77,7 +77,7 @@ EC2 인스턴스는 기능에 따라서, 그리고 가격에 따라 구분된다
 - 따라서 xlarge 이상의 사이즈를 선택해야 POD를 배포했을 때 무리 없이 활용할 수 있다.
   (너무 작은 사이즈는 EKS 노드로 활용하기 힘들다는 말이 된다. 실제 노드 그룹을 생성할 때 `t3.nano` 같은 타입은 선택 옵션에 나오지도 않는다.)
 
-{{< imageFull src="/images/posts/eks/instance-selection.png" title="eks 노드 그룹의 instance 선택" border="false" caption="eks 노드 그룹의 instance 선택">}}
+{{< imageFull src="/images/posts/aws/eks/instance-selection.png" class="large-width" title="eks 노드 그룹의 instance 선택" border="false" caption="eks 노드 그룹의 instance 선택">}}
 
 CLI 에서 다음 명령어를 입력하면 테이블 형태로 CPU, Memory, ENI, IP 수를 확인할 수 있다. 
 ```shell

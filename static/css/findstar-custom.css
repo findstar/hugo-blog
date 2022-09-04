@@ -22,6 +22,28 @@ body {
     }
 }
 
+@media only screen and (min-width: 1200px) {
+    figure.large-width {
+        max-width: 800px;
+        margin:auto;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    figure.middle-width {
+        max-width: 600px;
+        margin:auto;
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    figure.small-width {
+        max-width: 500px;
+        margin:auto;
+    }
+}
+
+
 .post-preview figure.post-list-thumb {
     float: right;
     overflow: hidden;
