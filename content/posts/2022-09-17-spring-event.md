@@ -22,7 +22,7 @@ open class PostService {
     // ...
 
     @Transactional
-    open fun savePost(psot: Post) {
+    open fun savePost(post: Post) {
         // post 저장
         postRepository.save(post)
     }
@@ -36,7 +36,7 @@ open class PostService {
     // ...
 
     @Transactional
-    open fun savePost(psot: Post) {
+    open fun savePost(post: Post) {
         // 추천 시스템을 위한 콘텐츠 풀에 전송
         recommendPoolSender.send(post)
         
@@ -77,7 +77,7 @@ open class PostService {
     private lateinit var applicationEventPublisher: ApplicationEventPublisher
 
     @Transactional
-    open fun savePost(psot: Post) {
+    open fun savePost(post: Post) {
         // post 저장
         postRepository.save(post)
         applicationEventPublisher.publishEvent(PostCreatedEvent(post))
