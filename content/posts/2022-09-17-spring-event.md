@@ -215,17 +215,51 @@ class PostCreateEventListener {
 // ...
 ```
 
-이렇게 하면 이벤트 리스너 로직이 별도의 스레드에서 실행되어 트랜잭션이 커밋되기 때문에 의도한 결과를 얻을 수 있다. 단 이렇게 하면 테스트코드를 작성하기는 좀 까다로울 수 있다.
+이렇게 하면 이벤트 리스너 로직이 별도의 스레드에서 실행되어 트랜잭션이 커밋되기 때문에 의도한 결과를 얻을 수 있다. 단 이렇게 하면 테스트코드를 작성하기는 좀 까다로울 수 있다. 
+그리고 이 방법을 사용하면 EventListener 는 별도의 쓰레드에서 실행되기 때문에 Listener 로직이 실행되는 시간이 사용자의 응답을 느리게 만들지 않는다.
 
-다른 방법으로는 `AFTER_COMMIT` 대신 `BEFORE_COMMIT` 을 사용하는 방법이다. 이렇게 되면 커밋이 되기 전에 리스너 로직이 실행되기 때문에 정상적으로 리스너 로직의 트랜잭션이 커밋될 수 있다. 
+두 번재 방법으로는 `AFTER_COMMIT` 대신 `BEFORE_COMMIT` 을 사용하는 방법이다. 이렇게 되면 커밋이 되기 전에 리스너 로직이 실행되기 때문에 정상적으로 리스너 로직의 트랜잭션이 커밋될 수 있다. 
 하지만 이 경우 리스너 로직에서 예외가 발생하면 이벤트를 발생시키는 핵심 로직의 트랜잭션에 영향을 줄 수 있기 때문에 주의해서 사용해야한다.
+
+```kotlin
+// ...
+  @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+  fun updateCounterForStatistics(event: PostCreatedEvent) {
+      // 통계 시스템의 카운팅 갱신
+      // 이 코드는 @Transactional 코드
+      // BEFORE_COMMIT 이기 떄문에 이벤트를 발생시킨 트랜잭션 안에서 이 로직이 실행된다. 
+      statisticsCounter.count(post)
+    }
+    
+// ...
+```
+
+세 번째 방법으로는 `@TransactionalEventListener` 어노테이션에 추가로 `@Transactional(propagation = Propagation.REQUIRES_NEW)` 을 붙여주는 방법이다.
+이렇게 하면 이벤트 리스너의 로직 안에서 실행되는 `@Transactional` 로직을 위한 새로운 트랜잭션이 이전의 트랜잭션과 구분되어 새롭게 시작한다. (`Propagation.REQUIRES_NEW`가 이를 알려줌)
+따라서 이벤트를 발생시킨 트랜잭션과는 별도의 분리된 트랜잭션 안에서 이벤트 리스너 로직이 실행된다.
+
+```kotlin
+// ...
+  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  fun updateCounterForStatistics(event: PostCreatedEvent) {
+      // 통계 시스템의 카운팅 갱신
+      // 이 코드는 @Transactional 코드
+      // Propagation.REQUIRES_NEW 옵션에 의해서 아래의 로직을 실행하기 위한 새로운 트랜잭션이 시작된다. 
+      // 이전의 트랜잭션은 이벤트 리스너의 시작시점만 알려줄뿐 트랜잭션을 공유하지 않는다.
+      statisticsCounter.count(post)
+    }
+    
+// ...
+```
 
 ## 결론
 
 - 스프링 이벤트기능을 사용하여 복잡한 로직을 별도의 리스너 로직으로 분리해서 핵심 로직은 간결하게 유지할 수 있다. 
 - 스프링 이벤트의 핵심은 이벤트의 발생(publish)와 이벤트의 처리(listener)를 연결해주는 역할이며 이런 구조를 pub/sub 구조로 이해할 수 있다.
 - 개발자는 이벤트 listener 로직을 필요할 때마다 추가할 수 있으므로 핵심로직은 간결하게, 리스너로 분리된 메서드로 유지할 수 있어서 구조를 이해하기 용이해진다.  
-- 트랜잭션과 함께 사용할 때는 `AFTER_COMMIT` 이 일반적으로 사용되지만, 리스너 로직에서 트랜잭션이 필요한 경우 `@Async` 등으로 우회할 수 있다. 다만 테스트가 불편해질 수 있다.
+- 트랜잭션과 함께 사용할 때는 `AFTER_COMMIT` 이 기본값으로 사용되지만, 리스너 로직에서 트랜잭션이 필요한 경우 `BEFORE_COMMIT`, `Propagation.REQUIRES_NEW`, `@Async` 등을 사용하여 처리할 수 있다.
+- 비동기 처리를 사용하여 사용자 응답에 영향을 주고 싶지 않다면 `@Async`를 사용할 수 있으나, 테스트가 까다로울 수 있다.
 
 ## 더 고민해볼 내용
 
@@ -249,3 +283,5 @@ class PostCreateEventListener {
 - Baeldung Srping event : https://www.baeldung.com/spring-events
 - https://kwonnam.pe.kr/wiki/springframework/transaction/transactional_event_listener
 - Transactional outbox pattern : https://microservices.io/patterns/data/transactional-outbox.html
+- https://velog.io/@znftm97/%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EA%B8%B0%EB%B0%98-%EC%84%9C%EB%B9%84%EC%8A%A4%EA%B0%84-%EA%B0%95%EA%B2%B0%ED%95%A9-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0%ED%95%98%EA%B8%B0-ApplicationEventPublisher
+- https://www.youtube.com/watch?v=b65zIH7sDug&t=1s&ab_channel=%EC%9A%B0%EC%95%84%ED%95%9CTech
