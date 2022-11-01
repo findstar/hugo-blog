@@ -1,5 +1,6 @@
 ---
 date: '2022-09-17 16:22:01 +09:00'
+lastmod: '2022-11-02 00:24:01 +09:00'
 group: blog
 image: /images/posts/spring/Spring_Framework_Logo_2018.png
 tags: ["spring", "spring event", "event driven"]

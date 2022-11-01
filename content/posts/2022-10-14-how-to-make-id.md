@@ -1,5 +1,6 @@
 ---
 date: '2022-10-14 23:26:22 +09:00'
+lastmod: '2022-11-02 00:00:00 +09:00'
 group: blog
 image: /images/posts/resource/id-generation.jpg
 tags: ["database", "ulid", "uuid"]
