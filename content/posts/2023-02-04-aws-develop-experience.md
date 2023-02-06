@@ -1,5 +1,6 @@
 ---
 date: '2023-02-04 15:46:22 +09:00'
+lastmod: '2023-02-06 22:50:00 +09:00'
 group: blog
 image: /images/posts/aws/aws_logo_smile_1200x630.png
 tags: ["aws", "architecture", "experience"]
@@ -60,26 +61,53 @@ AWS를 사용해서 인프라스트럭처를 설계하고 개발해본 경험을
 5. VPC 내부에서 AWS managed service 에 접근하기 위한 VPC EndPoint 를 생성하고 이를 위해서 endpoint 전용 subnet을 생성하였다.
 
 ## 고민들
-1. VPC 대역정하기
-    AWS의 시작은 뭐니뭐니 해도 VPC이기 때문에 VPC 설계를 어떻게 해야할지 고민이 되었다. 특히 VPC 대역을 얼마나 크게 잡을지 고민이 되었는데, 프로젝트 컨셉상 글로벌에 나눠져 있는 리전을 사용할 것이었고
-    이에 더해 사내에서 운영하던 네트워크 대역과 겹치지 않게 하기 위해서 고민을 많이 했다. 흔히 AWS VPC 튜토리얼에서 VPC를 생성할 때 나오는 `/16` 대역은 너무 크다고 느껴졌기 때문에 얼마나 크게 잡아야 하는지 고민이 되었다.
-    다행히 주변에 레퍼런스를 참고하여 적절한 대역을 잡을 수 있었다. 나의 경우에는 EKS가 메인이었기 때문에 혹시 몰라 EKS 버전업을 위해서 (필요 대역 * 2)로 잡았다.   
-2. 인프라스트럭처
-    VPC를 정한다음에는 subnet 을 어떻게 할것인지 몇개의 AZ를 구성할지 고민을 했다. 결론적으로 말하면 LB가 위치하는 Public 1개, worker 배치를 위한 private 1개, database 를 위한 private 1개, vpc endpoint를 위한 private 1개로
-    모두 1개의 public + 3 개의 priavte subnet 으로 구성하여 4개의 subnet을 구성하였다. AZ의 경우에는 2AZ를 사용했는데, RDS의 replica 구성에 따라서 3 AZ도 고려했지만, 일단 초기에는 2AZ로 구성하기로 했다.  
-3. EKS Node Group 인스턴스 타입 정하기
-    EKS 클러스터를 구성할 때에는 얼마나 큰 node size를 정해야 하는지 고민이 되었는데 어떤 점들을 고려했는지는 이전 [블로그 포스트](/2022/08/21/which-instance-type-is-right-for-EKS)에서 기록해두었다.
-4. 배포를 어떻게 할 것인가?
-    다음으로 배포를 어떻게 할 것인가에 대해서 고민이 했었다. 이건 뭐 정답이 없기 때문에 오히려 더 고민이 되었었는데, 최종적으로는 on prem 에서 container 이미지를 만들고 이를 ECR 에 push 한 다음 Codebuild 를 트리거 하여 
-    EKS에 rolling update 하는 방식으로 만들었다. Code Commit + ECR + Code Build 구성을 할 수도 있었지만, on prem 에서 운영하던 Image Security Scanning 기능을 더 선호하였기 때문에 이렇게 구성하였다. 
-5. 이미지 썸네일 생성을 위한 방법
-    서비스를 만들다 보니 이미지 썸네일 생성 기능이 필요했는데 다음의 2가지를 리서치 했다.  
+
+### 1. VPC 대역정하기
+* AWS의 시작은 뭐니뭐니 해도 VPC이기 때문에 VPC 설계를 어떻게 해야할지 고민이 되었다. 
+  - VPC 대역을 얼마나 크게 잡아야 할까?
+  - 흔히 VPC 설계 튜토리얼 문서에 나오는 `10.0.0.0/16` 대역은 너무 크다.
+  - 다른 리전에서도 VPC를 활용중이기 때문에 대역이 겹치면 나중에 통신에 문제가 발생한다! (처음에 고민을 잘해야한다)
+  - 초기 활용하는 주요 서비스는 EKS 클러스터 이므로 이 클러스터가 운용할 Pods 수량에 맞춰서 잡아야 한다.
+  - EKS 클러스터는 관리차원에서 클러스터 버전업을 해야할 때가 있는데, 이 경우 라이브로 production EKS 클러스터를 업그레이드 하는 것은 너무 리스크가 크다. 따라서 신규 EKS 클러스터를 셋업하고 트래픽을 넘기는 방향으로 진행하기로 한다. -> 이를 위한 예비 대역이 필요하다.  
+
+### 2. 인프라스트럭처 (Subnet 구성)
+* VPC 대역을 결정한 다음 subnet 을 어떻게 할것인지 고민을 했다. 
+  - 프로젝트의 서비스는 흔한 모바일 API 를 제공하는 기능을 필요로 했다.
+  - 외부 트래픽을 받는 ALB를 위한 public subnet 이 필요했다. (+Nat gateway) 
+  - EKS Worker 를 위한 private subnet 이 필요했다.
+  - 데이터베이스를 위한 private subnet 을 구성하기로 했다.
+  - AWS Managed Service (ElasticCache, S3 등)과 연결하기 위한 VPC Endpoint 용 private subnet 을 구성하기로 했다.
+  - 최종적으로 public 1 개, private 3 개로 구성하였다.
+* AZ는 몇개나 사용해야할지 고민했다.
+  - 기본적으로 2 AZ는 고려했는데 3개로 할지 2개로 할지 고민되었다.
+  - 당연히 3 AZ로 가면 좋겠지만 그만큼 비용이 추가되기 때문이다.
+  - AWS aurora가 아닌 RDS mysql 을 사용하기로 해는데 데이터베이스의 write / read replica 설정에 따라 3AZ를 필요로 하기도 했다.
+  - 최종적으로는 2AZ로 구성하기로 했다. (3AZ는 과해보여서)
+
+### 3. EKS 클러스터 사이즈
+* EKS Node Group 인스턴스 타입 정하기
+  EKS 클러스터를 구성할 때에는 얼마나 큰 node size를 정해야 하는지 고민이 되었다.
+  - 최종적으로는 이전에 작성한 [블로그 포스트](/2022/08/21/which-instance-type-is-right-for-EKS)에서 기록해두었다.
+
+### 4. 배포파이프라인
+* 배포를 어떻게 할 것인가?
+    다음으로 배포를 어떻게 할 것인가에 대해서 고민이 했었다. 
+  * 이건 뭐 정답이 없기 때문에 오히려 더 고민이 되었다.
+  * 최종적으로는 on prem 에서 container 이미지를 만들고 
+  * 만들어진 container 이미지를 ECR 에 push 한 다음 
+  * Codebuild 를 트리거 하여 EKS에 rolling update 했다. 
+  * Code Commit + ECR + Code Build 구성을 할 수도 있었지만, 
+  * on prem 에서 운영하던 Image Security Scanning 기능을 더 선호하였기 때문에 이렇게 구성하였다. 
+
+### 5. 기타
+* 이미지 썸네일 생성을 위한 방법
+  - 서비스를 만들다 보니 이미지 썸네일 생성 기능이 필요했는데 다음의 2가지를 리서치 했다.  
     - lambda를 사용하여 이미지 업로드시 미리 생성해두기
     - on demand 로 생성하기
-    
-    그 중에서 일단 lambda를 사용하여 이미지 업로드시 미리 생성해 두는 방식으로 했는데 이게 더 간편하고 시간이 덜걸려서 이 방법으로 개발하였다.
-6. Mobile App Push Notification 구조
-    모바일 앱에 push notification 을 어떻게 보낼 것인가에 대해서도 고민이 되었는데 일단 SNS를 통해서 APNS, Firebase FCM notification을 사용하도록 하고 설계하였다. 
+  - 그 중에서 일단 lambda를 사용하여 이미지 업로드시 미리 생성해 두는 방식으로 했는데 이게 더 간편하고 시간이 덜걸려서 이 방법으로 개발하였다.
+* Mobile App Push Notification 구조
+  - SQS+SNS를 통해서 APNS, Firebase FCM notification을 사용하도록 설계하였다.
+  - SNS의 mobile push 를 iOs, Android 용으로 각각 생성하였다.
 
 ## 어려웠던 점
 1. AWS에는 수많은 기능들이 존재한다. 따라서 필요한 기능을 적재적소에 활용할 수 있으면 쉽고 빠르게 인프라를 준비하고 서비스를 개발 할 수 있다. 그렇지만, 그 만큼 방대한 내용을 이해하고 있어야 하는데, 짧은 기간안에 
