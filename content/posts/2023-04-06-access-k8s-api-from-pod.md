@@ -2,7 +2,7 @@
 date: '2023-04-06 21:03:22 +09:00'
 group: blog
 image: /images/posts/kubernetes/Kubernetes-logo.png
-tags: ["k8s", "kubernetes", "k8s api"]
+tags: ["k8s", "kubernetes", "k8s api", "service account & role"]
 title: "쿠버네티스 클러스터의 POD에서 클러스터 API 사용하기"
 url: /2023/04/09/access-k8s-api-from-pod
 type: post
