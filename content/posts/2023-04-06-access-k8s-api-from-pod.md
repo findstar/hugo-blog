@@ -325,7 +325,7 @@ pod/curl-with-serviceaccount created
 $ kubectl exec -it curl-with-serviceaccount -- sh
 
 / $ # pod 안으로 들어옴
-/ $ export TOKEN=$(car /var/run/secrets/kubernetes.io/serviceaccount/token) # TOKEN 을 변수에 등록
+/ $ export TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token) # TOKEN 을 변수에 등록
 / $ export CURL_CA_BUNDLE=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt # ca.crt 를 curl 이 신뢰할 수 있도록 curl 변수에 등록
 / $ curl -H "Authorization: Bearer $TOKEN" https://kubernetes/api/v1/namespaces/default/pods # pod 목록을 조회하는 k8s 클러스터 API 호출
 {
