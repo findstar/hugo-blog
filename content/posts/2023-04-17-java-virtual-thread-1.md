@@ -13,7 +13,7 @@ summary: "2023년 9월 릴리즈 예정인 JDK 21 (LTS) 버전에는 주목할�
 
 # Virtual Thread
 
-2023년 9월에 릴리즈될 예정인 **JDK 21** (2023.09 월 릴리즈 예정) 는 Java 8 이후 세번째 LTS 버전이다(11, 17, 21). 이 버전에서는 많은 사람들이 기다리고 있는 `Virtual Thread` 라는 기능이 추가될 에정이다.
+2023년 9월에 릴리즈될 예정인 **JDK 21** (2023.09 월 릴리즈 예정) 는 Java 8 이후 세번째 LTS 버전이다(11, 17, 21). 이 버전에서는 많은 사람들이 기다리고 있는 `Virtual Thread` 라는 기능이 추가될 예정이다.
 이 `Virtual Thread` 가 어떤 의미가 있기 때문에 많은 사람들이 기다리고 있는지 알아보고 그 의미를 정리해보았다. 이 글은 `Virtual Thread`의 첫 번째 글이고 다음 글에서 계속 이어진다.
 
 ## Virtual Thread 란? 
@@ -62,33 +62,33 @@ JVM 자체적으로 내부 스케줄링을 통해서 사용할 수 있는 경량
 
 ## 목적
 
-Project Loom 의 결과로 탄생한 Virtual Thread는 다음과 같은 목적을 가지고 있는데, 기존의 Reactive Programming 과 비교해서 생각해보자.
+Project Loom 의 결과로 탄생한 `Virtual Thread`는 다음과 같은 목적을 가지고 있는데, 기존의 Reactive Programming 과 비교해서 생각해보자.
 
 ### 해결하고자 하는 문제
 
 1. Java 개발자가 하드웨어의 성능을 잘 활용하는 높은 처리량(쓰루풋)의 서버를 작성하는 것
-    - Virtual Thread는 Blocking 이 발생하면 내부적으로 스케줄링을 활용하여 Platform Thread가 그냥 대기하게 두지 않고 다른 Virtual Thread가 작업할 수 있도록 한다.
+    - `Virtual Thread`는 Blocking 이 발생하면 내부적으로 스케줄링을 활용하여 Platform Thread가 그냥 대기하게 두지 않고 다른 `Virtual Thread`가 작업할 수 있도록 한다.
     - 따라서 reactive programming 의 non-blcking 과 동일하게 Platform Thread의 리소스를 낭비하지 않는다.
 
 2. 동시에 자바 플랫폼의 디자인과 조화를 이루는 코드를 생성할 수 있도록 하는 것
     - 기존 Reactive Programming 의 장점에도 불구하고 전통적인 자바 언어의 구조는 Thread를 기반으로 하였기 때문에 Webflux등을 사용할 때 디버깅이 어려웠다.
-    - 하지만 Virtual Thread는 Thread 구조를 그대로 사용하기 때문에 디버깅, 프로파일링등 기존의 도구도 그대로 사용할 수 있다.
+    - 하지만 `Virtual Thread`는 Thread 구조를 그대로 사용하기 때문에 디버깅, 프로파일링등 기존의 도구도 그대로 사용할 수 있다.
 
 ### Reactive Programming 과의 비교
 
 * reactive programming 이 달성하고자 리소스를 효율적으로 사용하여 높은 처리량(throughput)을 달성하고자 하는 목적은 동일하다.
-* Virtual Thread를 사용하면 Non blocking 에 대한 처리를 JVM 레벨에서 담당해준다.
-* 따라서 Spring Web MVC 스타일로 코드를 작성하더라도 내부에서 Virtual Thread가 기존의 Platform Thread를 직접 사용하는 방식보다 효율적으로 스케줄링하여 처리량을 높일 수 있다.
+* `Virtual Thread`를 사용하면 Non blocking 에 대한 처리를 JVM 레벨에서 담당해준다.
+* 따라서 Spring Web MVC 스타일로 코드를 작성하더라도 내부에서 `Virtual Thread`가 기존의 Platform Thread를 직접 사용하는 방식보다 효율적으로 스케줄링하여 처리량을 높일 수 있다.
 
 
-* 결론적으로 Virtual Thread 는 기존 Thread 방식의 이점을 누리면서도 Reactive Programming 의 장점을 취할 수 있다.
+* 결론적으로 `Virtual Thread` 는 기존 Thread 방식의 이점을 누리면서도 Reactive Programming 의 장점을 취할 수 있다.
 
 {{< imageFull src="/images/posts/java/virtual-thread/virtual-thread.png" title="Virtual Thread와 기존 방식의 비교" border="false" >}}
 
 
 ## 구조
 
-그럼 어떻게 Virtual Thread 가 이런 목표를 달성할 수 있는지 그 구조를 살펴보자.
+그럼 어떻게 `Virtual Thread` 가 이런 목표를 달성할 수 있는지 그 구조를 살펴보자.
 
 ### Platform Thread와 Virtual Thread 의 구조 차이
 
@@ -97,8 +97,8 @@ OS Thread를 사용하는 것이다. 이 때 Thread는 비용이 비싸기 때�
 
 {{< imageFull src="/images/posts/java/virtual-thread/traditional-thread.png" title="전통적인 Thread 사용방법" border="false" >}}
 
-이에 반해 Virtual Thread는 OS Thread의 Warpping 이 아니기 때문에 애플리케이션 코드는 Virtual Thread Pool 없이 사용하고
-JVM 자체적으로 Virtual Thread를 OS Thread와 연결하는 스케줄링한다. 이 작업을 mount / unmount 라고 하고 기존에 Platform Thread라고 하던 부분을
+이에 반해 `Virtual Thread`는 OS Thread의 Warpping 이 아니기 때문에 애플리케이션 코드는 `Virtual Thread Pool` 없이 사용하고
+JVM 자체적으로 `Virtual Thread`를 OS Thread와 연결하는 스케줄링한다. 이 작업을 mount / unmount 라고 하고 기존에 Platform Thread라고 하던 부분을
 Carrier Thread라고 한다. (Virtual Thread를 실제 OS Thread로 연결해준다는 의미)
 
 {{< imageFull src="/images/posts/java/virtual-thread/virtual-thread-structure.png" title="Virtual Thread 사용방법" border="false" >}}
@@ -110,8 +110,8 @@ Carrier Thread라고 한다. (Virtual Thread를 실제 OS Thread로 연결해준
 
 {{< imageFull src="/images/posts/java/virtual-thread/virtual-thread-mount-and-unmount.png" title="Virtual Thread Scheduling" border="false" >}}
 
-다만 위와 같은 구조는 Virtual Thread가 수십~수백만까지 늘어날 수 있기 때문에 전통적인 Thread와 동일한 메모리 비용, 컨텍스트 비용이 발생하면 감당하기 어렵다.
-따라서 내부적으로는 전통적인 Thread와 Virtual Thread는 자원 사용량의 차이가 있다.
+다만 위와 같은 구조는 `Virtual Thread`가 수십~수백만까지 늘어날 수 있기 때문에 전통적인 Thread와 동일한 메모리 비용, 컨텍스트 비용이 발생하면 감당하기 어렵다.
+따라서 내부적으로는 전통적인 Thread와 `Virtual Thread`는 자원 사용량의 차이가 있다.
 
 ### 사용하는 자원의 차이
 |              | Platform Thread         | Virtual Thread |
