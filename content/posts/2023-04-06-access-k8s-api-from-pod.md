@@ -375,7 +375,7 @@ for (item in list.items) {
 
 K8S 클러스터 안에서 Pod 가 K8S API를 호출하기 위해서는 `서비스 어카운트`, `Role`, `RoleBinding` 이 필요하다. 
 pod 내부에서 curl 과 같이 직접 raw 하게 호출하려면 token, ca.crt 값을 신경써야 한다. 
-하지만 K8S 공식 사이트에서 안내하고 있는 API Client 라이브러리르 사용하면 손쉽게 API를 호출하고 그 결과를 확인할 수 있다.
+하지만 K8S 공식 사이트에서 안내하고 있는 API Client 라이브러리를 사용하면 손쉽게 API를 호출하고 그 결과를 확인할 수 있다.
 
 {{< imageFull src="/images/posts/kubernetes/serviceaccount/diagram.png" title="Pod 가 호출할 때 연결구조" border="false" >}}
 
