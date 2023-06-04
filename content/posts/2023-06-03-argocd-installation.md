@@ -177,9 +177,19 @@ K8S를 운영하면 애플리케이션을 어떻게 배포할지는 사실 케�
 동기화가 진행되면 다음과 같이 애플리케이션의 상태를 확인할 수 있다.
 {{< imageFull src="/images/posts/argocd/argocd-app-detail.png" title="ArgoCD Application Sample" border="false" >}}
 
+이제 컨테이너 이미지를 빌드하고 Gitops Repo 에 변경사항을 업데이트 하면 ArgoCD가 자동으로 클러스터에 애플리케이션을 배포해준다.
+
 ### 기타 
 
-- 필요시 [ArgoCD Notification](https://argocd-notifications.readthedocs.io/en/stable/) 을 설치하여 알림을 받을 수 있도록 한다.
+- ArgoCD는 자체적으로 대상 Gitops Repo를 감시하다가, 변경사항이 있다면 확인하여 클러스터에 적용한다. 
+- 하지만 이 과정은 Gitops repo 가 변경되는 즉시 적용되지 않고 약간의 시간텀이 필요하다. 
+- 따라서 좀 더 빠른 배포를 위해서 Github 에 Webhook 을 전달하는 방법을 고려할 수 있다.
+
+* Github Organization 에 Webhook 등록
+    - Github Org 셋팅 페이지 - "https://github.com/organizations/{my-org}/settings/hooks" 에서 Webhook 등록
+    - 다음과 같이 Webhook 을 등록한다. 등록 주소는 "https://my-argocd.my-domain.com/api/webhook" 의 형식이된다.
+    - {{< imageFull src="/images/posts/argocd/argocd-github-webhook.png" title="ArgoCD Github Webhook" border="false" >}}
+    - 이렇게 하면 ArgoCD가 좀 더 빠르게 반응한다.
 
 ## 정리
 
@@ -188,9 +198,9 @@ K8S를 운영하면 애플리케이션을 어떻게 배포할지는 사실 케�
 3. 로그인을 쉽게 하기 위해서 Github OAuth 연동을 하였다
 4. 클러스터 추가는 CLI에서만 가능하다.
 5. 애플리케이션을 추가하여 Sync 를 확인한다.
-6. 필요시 Notification 을 추가로 설치한다.
+6. Gitops repo 가 변경되면 자동으로 클러스터에 애플리케이션 형상이 동기화된다.
+7. Webhook 을 등록하면 좀 더 빠르게 동기화된다.
 
 ## 참고자료 
 
-- [ArgoCD](https://argo-cd.readthedocs.io/en/stable/)
-- [ArgoCD Notification](https://argocd-notifications.readthedocs.io/en/stable/) 
+- [ArgoCD](https://argo-cd.readthedocs.io/en/stable/) 
