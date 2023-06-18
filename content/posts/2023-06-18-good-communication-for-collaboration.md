@@ -4,7 +4,7 @@ group: blog
 image: /images/posts/communication/communication-on-messenger.jpg
 tags: ["communication", "collaboration" ]
 title: "협업을 위한 '좋은 커뮤니케이션'"
-url: /2023/06/08/good-communication-for-collaboration
+url: /2023/06/18/good-communication-for-collaboration
 type: post
 summary: "일을 잘하기 위해서, 협업을 잘하기 위해서 갖추어야 할 역량 중에 좋은 커뮤니케이션을 빼놓을 수 없다. 그렇다면 좋은 커뮤니케이션이란 무엇일까? 생각을 정리해보았다."
 목적 : "협업을 잘하기 위해서 필요한 '좋은 커뮤니케이션' 에 대한 생각을 정리하여 공유"
