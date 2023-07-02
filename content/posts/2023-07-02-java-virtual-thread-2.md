@@ -1,0 +1,244 @@
+---
+date: '2023-07-02 19:29:00 +09:00'
+group: blog
+image: /images/posts/java/virtual-thread/project-loom-logo.png
+tags: ["java", "jdk 21", "virtual thread", "throughput", "benchmark"]
+title: "Virtual Thread란 무엇일까? (2)"
+url: /2023/07/02/java-virtual-threads-2
+type: post
+summary: "이전 글에 이어서 Virtual Thread에 대해서 알아보았다. 성능 테스트를 수행해보고, 사용시 주의사항, 그리고 Virtual Thread를 사용하는데 제약사항에 대해서 살펴보았다."
+목적 : "Virtual Thread를 소개하고 기본적인 사용방법을 정리하여 공유한다."
+대상독자 : "Java 프로그래밍을 사용해보고, Thread에 대해서 기본적인 개념을 이해하고 있는 사람"
+---
+
+# Virtual Thread (2)
+
+[이전글](/2023/04/17/java-virtual-threads-1) 에서 `가상스레드`에 대한 **배경**과, **목적**, **간단한 사용법**에 대해서 알아보았다. 
+이번에는 자주 사용하는 Spring Boot 애플리케이션에서 `가상스레드`를 사용하는 방법과 기존 **스레드 풀** 방식에 비해서 실제로 처리량이 늘어나는지 확인해보았다. 
+마지막으로 `가상 스레드`를 사용할 때 주의할 점도 정리해보았다.
+
+## 스프링 부트에서 사용하기
+
+먼저 **Spring Boot**에서 `가상 스레드`를 적용하는 방법을 살펴보기 전에 몇가지 알아두어야 할 것들이 있다.
+
+**주의사항** 
+1. 현재 JDK 21 은 정식 릴리즈 전이다. (Early Access) 
+2. 2023년 7월 현재 JDK 20를 지원하는 Gradle 버전도 8.1.1 막 릴리즈된 상태이다. 
+3. Gradle 이 JDK 21을 공식 지원할 때까지는 조금 더 시간이 필요하다.
+4. Spring Boot 3 부터 JDK 17을 필요로 하고 현재 20까지 호환된다.
+5. Spring Boot 3에서 가상스레드 기능을 사용할 수 있게 되었지만 Preview 기능이다.
+
+**따라서 Gradle 8.1 이상, Spring Boot 3.0.5 버전 환경에서 `가상 스레드`를 제대로 확인할 수 있다고 가정하고 테스트를 진행하였다.**
+
+### 적용방법 
+
+* 생각보다 적용방법은 간단하다. 다음과 같은 `가상 스레드` Executor Bean 을 등록해주면 된다. 이 Bean 은 Tomcat이 사용자의 요청(Request)을 처리하기 위해 스레드를 사용할 때
+**플랫폼 스레드(OS 스레드)** 대신 `가상 스레드` 를 사용하게 한다.
+
+```java
+// Web Request 를 처리하는 Tomcat 이 Virtual Thread를 사용하여 유입된 요청을 처리하도록 한다.
+@Bean
+public TomcatProtocolHandlerCustomizer<?> protocolHandlerVirtualThreadExecutorCustomizer() 
+{
+  return protocolHandler -> {
+    protocolHandler.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
+  };
+}
+
+// Async Task에 Virtual Thread 사용
+@Bean(TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME)
+public AsyncTaskExecutor asyncTaskExecutor() {
+  return new TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor());
+}
+
+```
+
+이렇게만 해주면 기존의 **플랫폼 스레드**를 사용하지 않고 `가상 스레드` 를 사용하게 된다.
+
+그럼 이제 실제로 처리량이 좋아지는지 한번 확인해보자.
+
+## 성능 테스트
+
+### 테스트 환경
+
+- Ubuntu 20
+- Java 21 eap (sdkman)
+- Gradle 8.1.1 build
+- VM 인스턴스 머신 4 Core / 8 GiB memory 
+- 별도의 mariadb instance (hikari connection pool 50)
+- Max heap 2G
+- 별도 인스턴스에서 JMeter로 성능 테스트 (Aggregate Report 를 기준으로 수치 확인)
+
+
+```java
+
+    @GetMapping("/")
+    public String getOk() throws InterruptedException {
+        // Thread sleep 1초
+        Thread.sleep(1000);
+        return "OK";
+    }
+
+    @GetMapping("/thread-name")
+    public String getThreadName() {
+        return Thread.currentThread().toString();
+    }
+
+    @GetMapping("/query")
+    public String queryAndReturn() {
+        // 쿼리 질의가 1초 걸린다고 가정
+        return jdbcTemplate.queryForList("select sleep(1);").toString();
+    }
+```
+
+
+### 시나리오
+* 테스트는 3개의 API Endpoint 를 호출하였다. (**thread sleep**, **get thread name**, **sleep query**)
+* 모든 API 응답이 `200 OK` 확인될 때까지 VU를 높여보았다.
+* `200 OK` 가 유지되는 동안 `virtual thread` 와 `platform thread` 의 `throughput` 을 비교해보았다. 
+
+### 결과
+
+* Thread sleep 호출
+| 구분              | throughput | virtual users  |   loop count    |
+|-----------------|:------:|:---------------:|:-----:|
+| Virtual Thread(1회차)  |   **2072.3**     |      3000       | 5  |
+| Virtual Thread(2회차)  |   **2225.0**     |      3000       | 5  |
+| Virtual Thread(3회차)  |   **2171.1**     |      3000       | 5  |
+| Platform Thread(1회차)  |   **198.2**     |      3000       | 5  |
+| Platform Thread(2회차)  |   **198.0**     |      3000       | 5  |
+| Platform Thread(3회차)  |   **197.2**     |      3000       | 5  |
+
+* Thread name 을 Callable<String> 으로 조회
+  | 구분              | throughput | virtual users  |   loop count    |
+  |-----------------|:------:|:---------------:|:-----:|
+  | Virtual Thread(1회차)  |   **4654.0**     |      3000       | 5  |
+  | Virtual Thread(2회차)  |   **5611.7**     |      3000       | 5  |
+  | Virtual Thread(3회차)  |   **6048.4**     |      3000       | 5  |
+  | Platform Thread(1회차)  |   **2821.1**     |      3000       | 5  |
+  | Platform Thread(2회차)  |   **5832.0**     |      3000       | 5  |
+  | Platform Thread(3회차)  |   **5838.8**     |      3000       | 5  |
+
+* Sleep 이 걸려 있는 쿼리 호출 (Hikari connection pool - max 50) (VU 3000 은 계속 에러가 발생하여 둘다 500, loop 는 2로 줄였다.)
+  | 구분              | throughput | virtual users  |   loop count    |
+  |-----------------|:------:|:---------------:|:-----:|
+  | Virtual Thread(1회차)  |   **49.5**     |      500       | 2  |
+  | Virtual Thread(2회차)  |   **49.7**     |      500       | 2  |
+  | Virtual Thread(3회차)  |   **40.9**     |      500       | 2  |
+  | Platform Thread(1회차)  |   **48.1**     |      500       | 2  |
+  | Platform Thread(2회차)  |   **47.1**     |      500       | 2  |
+  | Platform Thread(3회차)  |   **36.2**     |      500       | 2  |
+
+### 결론
+
+- 모든 코드가 동일하게 적용되어 있는 상태에서 Virtual Thread를 사용할 때 Thread Block 이 발생하는 코드의 경우 처리량이 극명하게 차이가 났다. (약 200 vs 2000)
+- **AsyncTaskExecutor** 를 등록했기 때문에 **Callable<String>** 를 반환하는 코드에 큰 차이가 발생할줄 알았는데 생각보다 크게 변경되지 않는것 같다.
+- DB 에 대해서는 큰 차이를 느낄 수 없었다.
+- 실제 produciton 코드는 테스트 환경과 다르고 구동 환경도 다르기 때문에 참고용임을 감안하더라도 `Virtual Thread` 가 `Platform Thread` 에 비해서 처리량이 늘어날 수 있다는 점을 확인했다. 
+
+> `Virtual Thread` 사용시 기존 `Platform Thread` 보다 일정영역에서 처리량이 늘어나는 것을 확인할 수 있다.
+
+## 주의사항
+
+- `가상 스레드` 를 사용하여 높은 처리량을 얻으려면 이를 잘 사용해야한다.
+- 막연하게 설정을 활성화 하고 처리량이 높아지기를 기대하면 안된다. 몇가지 주의사항을 살펴보자.
+
+1. 기존 **스레드 풀**을 사용하지 말고, 개별 작업에 `가상 스레드` 를 할당하는 형태로 변경하자.
+    ```java
+    ourExecutor.submit(task1);
+    ourExecutor.submit(task2);
+    
+    ===>>>>
+    
+    try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    	executor.submit(task1);
+    	executor.submit(task2);
+    }
+    ```
+
+2. **ThreadLocals** 에 값비싼 객체를 캐싱하지 말자
+  
+   - `가상 스레드` 또한 자바 Thread 이므로 ThreadLocal을 지원한다. 
+   - 기존에 **플랫폼 스레드**는 비싸기 때문에, 여러 작업 사이에 공유하는 형태로 개발해왔다 (**Thread Pool**). 
+   - 그래서 기존에는 스레드 로컬 내부에 값비싼 객체를 캐시하는 것이 일반적인 패턴으로 활용되었다. 
+   - 모든 작업이 해당 스레드의 객체를 공유하도록 유도하였다. 
+   - 하지만 `가상 스레드`는 작업당 하나를 활용하는 것이 권장되며, 내부의 객체를 공유하지 않는다. 
+   - 따라서 내부에 값비싼 객체를 캐싱하는 것은 도움이 되지 않는다. 
+   - 오히려 `가상 스레드`가 예상보다 더 많은 메모리를 사용하게 만드는 주범이 된다.
+
+    ```java
+    static final ThreadLocal<SimpleDateFormat> cachedFormatter = 
+    	ThreadLocal.withInitial(SimpleDateFormat::new);
+    ...
+    
+    cachedFormatter.get().format(...);
+    
+    
+    =====>>>>>>>
+    
+    static final DateTimeFormatter formatter = DateTimeFormatter....;
+    ...
+    formatter.format(...);
+    
+    ```
+
+3. **synchronized** 키워드 사용시 주의가 필요하다. (Pinning 이슈)
+
+    - **synchronized** 키워드를 사용한 코드 블럭 안에서 blocking IO작업을 수행하는 경우에는 `가상 스레드` 를 unmount 할 수 없어서 Carrier Thread(Platform Thread)까지 Blocking 되는 현상이 발생한다. (이를 pinning 이라고 지칭함) 
+    - 이런 경우에는 `가상 스레드` 의 이점을 누릴 수가 없다.
+    - **synchronized**가 필요한 경우 자바의 동시성 유틸리티에 있는 **lock** 을 사용하자. 이렇게 되면 pinning의 영향에서 벗어날 수 있다.
+    - 이런 제약은 현재 개선작업이 진행중이긴 하지만 JDK21에서는 이를 주의해야한다. (JEP 425 에서 **synchronized** 키워드를 사용해도 쓰레드가 pinning 되지 않도록 개선하고 있다.)
+    - pinning 이 발생하는지 탐지하려면 JFR을 사용하거나 `-Djdk.tracePinnedThread` 옵션을 사용하면 pinning을 탐지할 수 있다.
+
+
+    ```java
+    synchronized(lockObj) {
+    	frequentIO();
+    }
+    
+    =====>>>>
+    
+    lock.lock();
+    try {
+    	frequentIO();
+    } finally {
+    	lock.unlock();
+    }
+    ```
+
+## 정리
+
+### 요약
+- 지금까지 JDK21 (LTS)에 추가될 `가상 스레드`에 대해서 알아보았다.
+- `가상 스레드` 는 리액티브 프로그래밍과 동일한 결과를 좀 더 쉽게, 덜 장황하게 달성한다.
+- `가상 스레드` 가 더 좋은 이유는 **기다림**에 대한 방식이 개선되기 때문이다.
+- `가상 스레드`는 기존의 플랫폼 스레드(전통적인 스레드)를 대체하려는 것이 아니며 둘다 사용이 가능하다.
+- `가상 스레드`를 사용시 **처리량**을 증가시킬 수 있다.
+- Spring Boot 3.x 에서 JDK21과 호환 작업이 적용되면, 기존 코드 그대로 사용하면서 혜택을 누릴 수 있을 것이다.
+- Profject Loom 의 결과물은 `가상 스레드`만 있는 것은 아니다. 앞으로 추가 JEP가 더 개발될 예정이다.
+
+### 소감
+
+두 번째 글을 작성하는 사이 JDK 21 의 릴리즈 날짜가 9월 19일로 예정되었다. 가을이 오면 EAP가 아닌 실제 릴리즈 버전을 가지고 테스트를 해보고 싶다. 
+
+`가상 스레드`가 아무리 좋아보여도 실제 production 에 적용되기 까지는 시간이 필요할 것이다. Spring Boot 의 버전업과 기존에 다양한 라이브러리들이 호환 작업을 진행하고 또 이런 내용들이 안정화 될 때까지 시간이 필요하기 때문이다.
+
+`가상 스레드`는 [은빛 총알](https://en.wikipedia.org/wiki/No_Silver_Bullet)이 아니다. 막연하게 적용만 하면 처리량이 늘어날 것을 기대하면 안된다. 잘 알고 사용하고 또 한계점에 대해서 인지해야한다. 
+
+약간 아쉬운 부분 중 하나는 `가상 스레드`는 아직 추가 JEP들의 도움을 받아야 기술이 성숙해질 것 같다는 점이고, 다른 하나는 Golang 의 **고루틴** 과 같은 완전한 경량 스레드는 아니라는 점이다.
+
+그렇지만 5년내내 묵묵히 개발을 진행해온 `Project Loom` 개발팀에 박수를 보내며 앞으로 추가로 릴리즈될 JEP를 기대해본다. 👏👏👏👏👏👏
+
+(+코틀린에서의 지원, 코루틴과 궁합은 또 어떻게 될지..?)
+
+
+## 참고자료
+ - https://www.youtube.com/watch?v=YQ6EpIk7KgY
+ - https://www.youtube.com/watch?v=n8uGsc4y6W4
+ - https://medium.com/@zakgof/a-simple-benchmark-for-jdk-project-looms-virtual-threads-4f43ef8aeb1
+ - https://medium.com/naukri-engineering/virtual-thread-performance-gain-for-microservices-760a08f0b8f3
+ - https://perfectacle.github.io/2022/12/29/look-over-java-virtual-threads/
+ - https://blog.devgenius.io/spring-boot-3-with-java-19-virtual-threads-ca6a03bc511d
+ - https://howtodoinjava.com/java/multi-threading/virtual-threads/
+ - https://www.linkedin.com/pulse/virtual-threads-java-any-benefit-all-use-cases-arvind-kumar/
+ - https://www.youtube.com/watch?v=zluKcazgkV4&ab_channel=KotlinbyJetBrains
