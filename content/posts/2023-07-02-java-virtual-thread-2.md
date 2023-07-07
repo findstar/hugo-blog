@@ -1,5 +1,6 @@
 ---
 date: '2023-07-02 19:29:00 +09:00'
+lastmod: '2023-07-07 22:48:00 +09:00'
 group: blog
 image: /images/posts/java/virtual-thread/project-loom-logo.png
 tags: ["java", "jdk 21", "virtual thread", "throughput", "benchmark"]
@@ -65,23 +66,23 @@ public AsyncTaskExecutor asyncTaskExecutor() {
 - Java 21 eap (sdkman)
 - Gradle 8.1.1 build
 - VM 인스턴스 머신 4 Core / 8 GiB memory 
-- 별도의 mariadb instance (hikari connection pool 50)
+- 별도의 mariadb instance (max connection size 151)
 - Max heap 2G
-- 별도 인스턴스에서 JMeter로 성능 테스트 (Aggregate Report 를 기준으로 수치 확인)
-
 
 ```java
 
     @GetMapping("/")
-    public String getOk() throws InterruptedException {
-        // Thread sleep 1초
-        Thread.sleep(1000);
-        return "OK";
+    public String getThreadName() {
+        // 단순히 스레드 이름을 반환 아무런 blocking 코드 없음  
+        return Thread.currentThread().toString();
     }
 
-    @GetMapping("/thread-name")
-    public String getThreadName() {
-        return Thread.currentThread().toString();
+    @GetMapping("/block")
+    public String getBlockedResponse() throws InterruptedException {
+        // Thread sleep 1초
+        // 비지니스 로직 처리에 thread 가 blocking 되는 환경 가정
+        Thread.sleep(1000);
+        return "OK";
     }
 
     @GetMapping("/query")
@@ -89,51 +90,53 @@ public AsyncTaskExecutor asyncTaskExecutor() {
         // 쿼리 질의가 1초 걸린다고 가정
         return jdbcTemplate.queryForList("select sleep(1);").toString();
     }
+    
 ```
 
 
 ### 시나리오
-* 테스트는 3개의 API Endpoint 를 호출하였다. (**thread sleep**, **get thread name**, **sleep query**)
+* 테스트는 3개의 API Endpoint 를 호출하였다. (**simple response**, **block response**, **sleep query**)
 * 모든 API 응답이 `200 OK` 확인될 때까지 VU를 높여보았다.
 * `200 OK` 가 유지되는 동안 `virtual thread` 와 `platform thread` 의 `throughput` 을 비교해보았다. 
 
 ### 결과
 
-* Thread sleep 호출
-| 구분              | throughput | virtual users  |   loop count    |
-|-----------------|:------:|:---------------:|:-----:|
-| Virtual Thread(1회차)  |   **2072.3**     |      3000       | 5  |
-| Virtual Thread(2회차)  |   **2225.0**     |      3000       | 5  |
-| Virtual Thread(3회차)  |   **2171.1**     |      3000       | 5  |
-| Platform Thread(1회차)  |   **198.2**     |      3000       | 5  |
-| Platform Thread(2회차)  |   **198.0**     |      3000       | 5  |
-| Platform Thread(3회차)  |   **197.2**     |      3000       | 5  |
+* Simple response 호출
+| 구분              | throughput | virtual users  |   
+|-----------------|:------:|:---------------:|
+| Virtual Thread(1회차)  |   **24360.88**     |      3000       |
+| Virtual Thread(2회차)  |   **24608.85**     |      3000       |
+| Virtual Thread(3회차)  |   **24455.14**     |      3000       |
+| Platform Thread(1회차)  |   **36085.42**     |      3000       |
+| Platform Thread(2회차)  |   **36396.71**     |      3000       |
+| Platform Thread(3회차)  |   **36107.85**     |      3000       |
 
-* Thread name 을 Callable<String> 으로 조회
-  | 구분              | throughput | virtual users  |   loop count    |
-  |-----------------|:------:|:---------------:|:-----:|
-  | Virtual Thread(1회차)  |   **4654.0**     |      3000       | 5  |
-  | Virtual Thread(2회차)  |   **5611.7**     |      3000       | 5  |
-  | Virtual Thread(3회차)  |   **6048.4**     |      3000       | 5  |
-  | Platform Thread(1회차)  |   **2821.1**     |      3000       | 5  |
-  | Platform Thread(2회차)  |   **5832.0**     |      3000       | 5  |
-  | Platform Thread(3회차)  |   **5838.8**     |      3000       | 5  |
+* Thread.sleep(1000) - Blocking 호출
+  | 구분              | throughput | virtual users  |   
+  |-----------------|:------:|:---------------:|
+  | Virtual Thread(1회차)  |   **2975.38**     |      3000       |
+  | Virtual Thread(2회차)  |   **2979.87**     |      3000       |
+  | Virtual Thread(3회차)  |   **2978.39**     |      3000       |
+  | Platform Thread(1회차)  |   **199.78**     |      3000       |
+  | Platform Thread(2회차)  |   **199.58**     |      3000       |
+  | Platform Thread(3회차)  |   **199.6**     |      3000       |
 
-* Sleep 이 걸려 있는 쿼리 호출 (Hikari connection pool - max 50) (VU 3000 은 계속 에러가 발생하여 둘다 500, loop 는 2로 줄였다.)
-  | 구분              | throughput | virtual users  |   loop count    |
-  |-----------------|:------:|:---------------:|:-----:|
-  | Virtual Thread(1회차)  |   **49.5**     |      500       | 2  |
-  | Virtual Thread(2회차)  |   **49.7**     |      500       | 2  |
-  | Virtual Thread(3회차)  |   **40.9**     |      500       | 2  |
-  | Platform Thread(1회차)  |   **48.1**     |      500       | 2  |
-  | Platform Thread(2회차)  |   **47.1**     |      500       | 2  |
-  | Platform Thread(3회차)  |   **36.2**     |      500       | 2  |
+* Sleep 이 걸려 있는 쿼리 호출 (Hikari connection pool - max 150)
+  | 구분              | throughput | virtual users  |   
+  |-----------------|:------:|:---------------:|
+  | Virtual Thread(1회차)  |   **SQLTransientConnectionException**     |      3000       |
+  | Virtual Thread(2회차)  |   **SQLTransientConnectionException**     |      3000       |
+  | Virtual Thread(3회차)  |   **SQLTransientConnectionException**     |      3000       |
+  | Platform Thread(1회차)  |   **149.26**     |      3000       |
+  | Platform Thread(2회차)  |   **149.53**     |      3000       |
+  | Platform Thread(3회차)  |   **149.53**     |      3000       |
 
 ### 결론
 
-- 모든 코드가 동일하게 적용되어 있는 상태에서 Virtual Thread를 사용할 때 Thread Block 이 발생하는 코드의 경우 처리량이 극명하게 차이가 났다. (약 200 vs 2000)
-- **AsyncTaskExecutor** 를 등록했기 때문에 **Callable<String>** 를 반환하는 코드에 큰 차이가 발생할줄 알았는데 생각보다 크게 변경되지 않는것 같다.
-- DB 에 대해서는 큰 차이를 느낄 수 없었다.
+- Thread Blocking 이 발생하지 않는 경우 Platform Thread 가 더 처리량이 높다. (Virtual Thread Scheduling 을 위한 오버헤드의 영향으로 보인다.)
+- Thread Blocking 이 발생하는 경우 Virtual Thread를 사용할 때가 처리량이 더 높다. 
+- DB Query 에 대해서는 Virtual Thread를 사용할 때 **SQLTransientConnectionException** 이 발생했는데, Tomcat 이후로 로직이 넘어갔는데 DB Connection 을 얻으려다가 timeout (30s)이 발생하는 것으로 추정된다.
+- DB Connection 과 같은 한정된 자원에 접근을 제한하려면 semaphores를 도입하는걸 고려해야할것 같다.
 - 실제 produciton 코드는 테스트 환경과 다르고 구동 환경도 다르기 때문에 참고용임을 감안하더라도 `Virtual Thread` 가 `Platform Thread` 에 비해서 처리량이 늘어날 수 있다는 점을 확인했다. 
 
 > `Virtual Thread` 사용시 기존 `Platform Thread` 보다 일정영역에서 처리량이 늘어나는 것을 확인할 수 있다.
