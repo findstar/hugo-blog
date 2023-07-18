@@ -14,7 +14,7 @@ summary: "2023년 9월 릴리즈 예정인 Java 21 (LTS) 버전에는 주목할�
 # Virtual Thread (1)
 
 2023년 9월에 릴리즈될 예정인 **Java 21** (2023.09 월 릴리즈 예정) 는 Java 8 이후 세번째 LTS 버전이다(11, 17, 21). 이 버전에서는 많은 사람들이 기다리고 있는 `가상 스레드` 라는 기능이 추가될 예정이다.
-이 `Virtual Thread`(이하 가상스레드) 가 어떤 의미가 있기 때문에 많은 사람들이 기다리고 있는지 알아보고 그 의미를 정리해보았다. 이 글은 `가상 스레드`의 첫 번째 글이고 다음 글에서 계속 이어진다.
+이 `Virtual Thread`(이하 가상스레드) 가 어떤 의미가 있기 때문에 많은 사람들이 기다리고 있는지 알아보고 그 의미를 정리해보았다. 이 글은 `가상 스레드`의 첫 번째 글이고 [다음 글](/2023/07/02/java-virtual-threads-2)에서 계속 이어진다.
 
 ## 가상 스레드 란? 
 
@@ -181,6 +181,12 @@ public class Main {
          // 스레드가 Virtual Thread인지 확인하여 출력
          System.out.println("Thread is Virtual? " + virtualThread2.isVirtual()); 
          
+         // ExecutorService 사용
+         try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (int i = 0; i <3; ㅑ++) {
+                executorService.submit(runnable);
+            }
+         }
     }
 }
 ```
@@ -198,6 +204,9 @@ Hello Virtual Thread
 Hi Virtual Thread
 Hi Virtual Thread
 Thread is Virtual? true
+Hi Virtual Thread
+Hi Virtual Thread
+Hi Virtual Thread
 ```
 
 기존의 스레드(플랫폼 스레드)를 생성하던 문법과 큰 차이가 없이 `가상 스레드`를 만들 수 있다는 걸 알수 있다. 이번에는 Executors 를 사용하여 10만개의 `가상 스레드`를 만들고 
