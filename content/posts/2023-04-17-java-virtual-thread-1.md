@@ -183,7 +183,7 @@ public class Main {
          
          // ExecutorService 사용
          try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
-            for (int i = 0; i <3; ㅑ++) {
+            for (int i = 0; i <3; i++) {
                 executorService.submit(runnable);
             }
          }
