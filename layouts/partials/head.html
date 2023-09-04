@@ -10,6 +10,7 @@
 {{ if .Site.GoogleAnalytics }}
 {{ partial "meta/ga.html" . }}
 {{ end }}
+{{ partial "meta/adsense.html" . }}
 <link rel="shortcut icon" href="{{ "img/favicon.ico" | relURL }}">
 <title>{{ block "title" . }}{{ .Title }} - {{ .Site.Title }}{{ end }}</title>
 <link rel="canonical" href="{{ .Permalink | relURL }}">
