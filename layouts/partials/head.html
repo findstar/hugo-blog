@@ -7,6 +7,9 @@
 {{ partial "meta/twitter.html" . }}
 {{ partial "meta/article.html" . }}
 {{ partial "favicon.html" . }}
+{{ if .Site.GoogleAnalytics }}
+{{ partial "meta/ga.html" . }}
+{{ end }}
 <link rel="shortcut icon" href="{{ "img/favicon.ico" | relURL }}">
 <title>{{ block "title" . }}{{ .Title }} - {{ .Site.Title }}{{ end }}</title>
 <link rel="canonical" href="{{ .Permalink | relURL }}">
@@ -35,7 +38,3 @@
 {{ end }}
 
 </head>
-{{ if .Site.GoogleAnalytics }}
-{{ partial "meta/ga.html" . }}
-{{ end }}
-
