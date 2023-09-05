@@ -156,6 +156,7 @@ OpenJDK 64-Bit Server VM (build 21-ea+18-1480, mixed mode, sharing)
 ```
 
 다음은 `가상 스레드` 를 사용하는 코드를 작성해보자. IntelliJ 에서 아직 Java 21 문법을 지원하지 않아 빌드가 잘 되지 않아 CLI 에서 실행하였다.
+(2023.11월에 출시예정인 2023.03 버전부터 지원한다고 한다.[링크](https://intellij-support.jetbrains.com/hc/en-us/community/posts/13049784815250-Planned-release-date-of-2023-3-with-Java-21-support))
 
 ```java
 public class Main {
