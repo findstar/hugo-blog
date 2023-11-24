@@ -1,6 +1,6 @@
 ---
 date: '2023-07-02 19:29:00 +09:00'
-lastmod: '2023-09-05 23:30:00 +09:00'
+lastmod: '2023-11-24 20:18:00 +09:00'
 group: blog
 image: /images/posts/java/virtual-thread/project-loom-logo.png
 tags: ["java", "jdk 21", "virtual thread", "throughput", "benchmark"]
@@ -16,25 +16,39 @@ summary: "이전 글에 이어서 Virtual Thread에 대해서 알아보았다. �
 
 [이전글](/2023/04/17/java-virtual-threads-1) 에서 `가상스레드`에 대한 **배경**과, **목적**, **간단한 사용법**에 대해서 알아보았다. 
 이번에는 자주 사용하는 Spring Boot 애플리케이션에서 `가상스레드`를 사용하는 방법과 기존 **스레드 풀** 방식에 비해서 실제로 처리량이 늘어나는지 확인해보았다. 
-마지막으로 `가상 스레드`를 사용할 때 주의할 점도 정리해보았다.
+마지막으로 `가상 스레드`를 사용할 때 주의할 점도 정리해보았다. 이 글은 `가상 스레드`와 관련된 두 번째 글이다.
+
+* 시리즈
+    - [Virtual Thread란 무엇일까? (1)](/2023/04/17/java-virtual-threads-1)
+    - [Virtual Thread란 무엇일까? (2)](/2023/07/02/java-virtual-threads-2)
+
 
 ## 스프링 부트에서 사용하기
 
 먼저 **Spring Boot**에서 `가상 스레드`를 적용하는 방법을 살펴보기 전에 몇가지 알아두어야 할 것들이 있다.
 
 **주의사항** 
-1. 현재 JDK 21 은 정식 릴리즈 전이다. (2023.09.19일 예정) 
-2. 2023년 7월 현재 JDK 20를 지원하는 Gradle 버전도 8.1.1 막 릴리즈된 상태이다. 
-3. Gradle 이 JDK 21을 공식 지원할 때까지는 조금 더 시간이 필요하다. (아마도 8.4 부터? [참고링크](https://github.com/gradle/gradle/issues/25573))
-4. Spring Boot 3 부터 JDK 17을 필요로 하고 현재 20까지 호환된다. (Spring Boot 3.2 부터 Virtual Thread 지원 - 2023.09.05 기준 preview)
-5. Spring Boot 3에서 가상스레드 기능을 사용할 수 있게 되었지만 Preview 기능이다.
+1. JDK 21 은 2023.09.19 정식 릴리즈되었다. 
+2. Gradle 버전은 8.4 버전 이상에서 JDK 21을 지원한다. 
+3. Spring Boot 3.2 가 2023.11.23 정식 릴리즈되어 JDK 21을 지원한다.
 
-**따라서 Gradle 8.1 이상, Spring Boot 3.0.5 버전 환경에서 `가상 스레드`를 제대로 확인할 수 있다고 가정하고 테스트를 진행하였다.**
+**`가상 스레드`를 제대로 확인하려면 버전을 꼭 확인하기 바란다.**
 
 ### 적용방법 
 
-* 생각보다 적용방법은 간단하다. 다음과 같은 `가상 스레드` Executor Bean 을 등록해주면 된다. 이 Bean 은 Tomcat이 사용자의 요청(Request)을 처리하기 위해 스레드를 사용할 때
+- 생각보다 적용방법은 간단하다. Spring Boot 3.2 버전 부터는 `spring.threads.virtual.enabled` 옵션을 `true` 설정해주면 된다. [링크](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.2-Release-Notes#support-for-virtual-threads)
+- 만약 3.2 버전 보다 낮은 버전을 사용중이라면 `가상 스레드` Executor Bean 을 등록해주면 된다. 이 Bean 은 Tomcat이 사용자의 요청(Request)을 처리하기 위해 스레드를 사용할 때
 **플랫폼 스레드(OS 스레드)** 대신 `가상 스레드` 를 사용하게 한다.
+
+```yaml
+# application.yaml
+spring:
+  threads:
+    virtual:
+      enabled: true
+```
+
+Sprinb Boot 3.2 보다 낮은 버전 사용중이라면 아래와 같이 직접 Bean 을 등록해주면 된다.
 
 ```java
 // Web Request 를 처리하는 Tomcat 이 Virtual Thread를 사용하여 유입된 요청을 처리하도록 한다.
@@ -51,10 +65,7 @@ public TomcatProtocolHandlerCustomizer<?> protocolHandlerVirtualThreadExecutorCu
 public AsyncTaskExecutor asyncTaskExecutor() {
   return new TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor());
 }
-
 ```
-
-> (updated - Spring Boot 3.2 부터는 `spring.threads.virtual.enabled` 옵션을 `true` 로 주면 위의 코드처럼 직접 Bean 을 등록하지 않아도 된다.)
 
 이렇게만 해주면 기존의 **플랫폼 스레드**를 사용하지 않고 `가상 스레드` 를 사용하게 된다.
 
@@ -65,8 +76,8 @@ public AsyncTaskExecutor asyncTaskExecutor() {
 ### 테스트 환경
 
 - Ubuntu 20
-- Java 21 eap (sdkman)
-- Gradle 8.1.1 build
+- Java 21 (sdkman)
+- Gradle 8.4 build
 - VM 인스턴스 머신 4 Core / 8 GiB memory 
 - 별도의 mariadb instance (max connection size 151)
 - Max heap 2G
@@ -214,17 +225,15 @@ public AsyncTaskExecutor asyncTaskExecutor() {
 ## 정리
 
 ### 요약
-- 지금까지 JDK21 (LTS)에 추가될 `가상 스레드`에 대해서 알아보았다.
+- 지금까지 JDK21 (LTS)에 추가된 `가상 스레드`에 대해서 알아보았다.
 - `가상 스레드` 는 리액티브 프로그래밍과 동일한 결과를 좀 더 쉽게, 덜 장황하게 달성한다.
 - `가상 스레드` 가 더 좋은 이유는 **기다림**에 대한 방식이 개선되기 때문이다.
 - `가상 스레드`는 기존의 플랫폼 스레드(전통적인 스레드)를 대체하려는 것이 아니며 둘다 사용이 가능하다.
 - `가상 스레드`를 사용시 **처리량**을 증가시킬 수 있다.
-- Spring Boot 3.x 에서 JDK21과 호환 작업이 적용되면, 기존 코드 그대로 사용하면서 혜택을 누릴 수 있을 것이다.
+- Spring Boot 3.2 에서 JDK21과 호환 작업이 적용되었다. Sprinb Boot 버전업을 진행하면 기존 코드 그대로 사용하면서 혜택을 누릴 수 있을 것이다.
 - Profject Loom 의 결과물은 `가상 스레드`만 있는 것은 아니다. 앞으로 추가 JEP가 더 개발될 예정이다.
 
 ### 소감
-
-두 번째 글을 작성하는 사이 JDK 21 의 릴리즈 날짜가 9월 19일로 예정되었다. 가을이 오면 EAP가 아닌 실제 릴리즈 버전을 가지고 테스트를 해보고 싶다. 
 
 `가상 스레드`가 아무리 좋아보여도 실제 production 에 적용되기 까지는 시간이 필요할 것이다. Spring Boot 의 버전업과 기존에 다양한 라이브러리들이 호환 작업을 진행하고 또 이런 내용들이 안정화 될 때까지 시간이 필요하기 때문이다.
 
@@ -236,6 +245,9 @@ public AsyncTaskExecutor asyncTaskExecutor() {
 
 (+코틀린에서의 지원, 코루틴과 궁합은 또 어떻게 될지..?)
 
+* 시리즈
+    - [Virtual Thread란 무엇일까? (1)](/2023/04/17/java-virtual-threads-1)
+    - [Virtual Thread란 무엇일까? (2)](/2023/07/02/java-virtual-threads-2)
 
 ## 참고자료
  - https://www.youtube.com/watch?v=YQ6EpIk7KgY

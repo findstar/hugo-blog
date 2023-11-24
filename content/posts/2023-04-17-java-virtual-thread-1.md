@@ -1,5 +1,6 @@
 ---
 date: '2023-04-17 19:30:00 +09:00'
+lastmod: '2023-11-24 20:18:00 +09:00'
 group: blog
 image: /images/posts/java/virtual-thread/project-loom-logo.png
 tags: ["java", "jdk 21", "virtual thread", "throughput"]
@@ -13,8 +14,12 @@ summary: "2023년 9월 릴리즈 예정인 Java 21 (LTS) 버전에는 주목할�
 
 # Virtual Thread (1)
 
-2023년 9월에 릴리즈될 예정인 **Java 21** (2023.09 월 릴리즈 예정) 는 Java 8 이후 세번째 LTS 버전이다(11, 17, 21). 이 버전에서는 많은 사람들이 기다리고 있는 `가상 스레드` 라는 기능이 추가될 예정이다.
-이 `Virtual Thread`(이하 가상스레드) 가 어떤 의미가 있기 때문에 많은 사람들이 기다리고 있는지 알아보고 그 의미를 정리해보았다. 이 글은 `가상 스레드`의 첫 번째 글이고 [다음 글](/2023/07/02/java-virtual-threads-2)에서 계속 이어진다.
+2023년 9월 19일에 릴리즈된 **Java 21** 는 Java 8 이후 세번째 LTS 버전이다(11, 17, 21). 이 버전에서는 많은 사람들이 기다리고 있는 `가상 스레드` 라는 기능이 추가되었다.
+이 `Virtual Thread`(이하 가상스레드) 가 어떤 의미가 있기 때문에 많은 사람들이 기다리고 있는지 알아보고 그 의미를 정리해보았다. 이 글은 `가상 스레드`와 관련된 첫 번째 글이고 다음 글로 계속 이어진다.
+
+* 시리즈
+   - [Virtual Thread란 무엇일까? (1)](/2023/04/17/java-virtual-threads-1)
+   - [Virtual Thread란 무엇일까? (2)](/2023/07/02/java-virtual-threads-2)
 
 ## 가상 스레드 란? 
 
@@ -127,38 +132,80 @@ Carrier 스레드라고 한다. (가상 스레드를 실제 OS 스레드로 연�
 
 ### 준비과정
 
-아직 Java 21은 정식 릴리즈 되지 않은 EAP 단계이기 때문에 [SDKMan](https://sdkman.io/) 을 사용하여 21 EAP (OpenJDK) 를 설치한다.
+[SDKMan](https://sdkman.io/) 을 사용하여 JDK 21을 설치한다.
 
 ```bash
-$ sdk install java 21.ea.18-open
+$ sdk list java
 
-Downloading: java 21.ea.18-open
+================================================================================
+Available Java Versions for macOS ARM 64bit
+================================================================================
+ Vendor        | Use | Version      | Dist    | Status     | Identifier
+--------------------------------------------------------------------------------
+ Corretto      |     | 21           | amzn    |            | 21-amzn
+               |     | 21.0.1       | amzn    |            | 21.0.1-amzn
+               |     | 20.0.2       | amzn    |            | 20.0.2-amzn
+               |     | 20.0.1       | amzn    |            | 20.0.1-amzn
+               |     | 8.0.382      | amzn    |            | 8.0.382-amzn
+               |     | 8.0.372      | amzn    |            | 8.0.372-amzn
+ Gluon         |     | 22.1.0.1.r17 | gln     |            | 22.1.0.1.r17-gln
+               |     | 22.1.0.1.r11 | gln     |            | 22.1.0.1.r11-gln
+ GraalVM CE    |     | 21           | graalce |            | 21-graalce
+               |     | 21.0.1       | graalce |            | 21.0.1-graalce
+               |     | 17.0.8       | graalce |            | 17.0.8-graalce
+               |     | 17.0.7       | graalce |            | 17.0.7-graalce
+ GraalVM Oracle|     | 21           | graal   |            | 21-graal
+               |     | 21.0.1       | graal   |            | 21.0.1-graal
+               |     | 17.0.8       | graal   |            | 17.0.8-graal
+               |     | 17.0.7       | graal   |            | 17.0.7-graal
+ Java.net      |     | 22.ea.25     | open    |            | 22.ea.25-open
+               |     | 22.ea.16     | open    |            | 22.ea.16-open
+               |     | 21           | open    |            | 21-open
+               |     | 21.ea.35     | open    |            | 21.ea.35-open
+               |     | 21.ea.18     | open    |            | 21.ea.18-open
+               |     | 21.0.1       | open    |            | 21.0.1-open
+               |     | 20.0.2       | open    |            | 20.0.2-open
+```
+
+여러가지 버전을 설치할 수 있지만 OpenJDK 버전의 최신버전인 21.0.1-open 을 설치해보자
+
+```bash
+$ sdk install java 21.0.1-open
+
+Downloading: java 21.0.1-open
 
 In progress...
 
 ################################################################################################ 100.0%
 
-Repackaging Java 21.ea.18-open...
+Repackaging Java 21.0.1-open...
 
 Done repackaging...
 Cleaning up residual files...
 
-Installing: java 21.ea.18-open
+Installing: java 21.0.1-open
 Done installing!
 
+Do you want java 21.0.1-open to be set as default? (Y/n):  Y
 
-Setting java 21.ea.18-open as default.
+Setting java 21.0.1-open as default.
 
 $ java --version
-openjdk 21-ea 2023-09-19
-OpenJDK Runtime Environment (build 21-ea+18-1480)
-OpenJDK 64-Bit Server VM (build 21-ea+18-1480, mixed mode, sharing)
+openjdk 21.0.1 2023-10-17
+OpenJDK Runtime Environment (build 21.0.1+12-29)
+OpenJDK 64-Bit Server VM (build 21.0.1+12-29, mixed mode, sharing)
 ```
 
-다음은 `가상 스레드` 를 사용하는 코드를 작성해보자. IntelliJ 에서 아직 Java 21 문법을 지원하지 않아 빌드가 잘 되지 않아 CLI 에서 실행하였다.
-(2023.11월에 출시예정인 2023.03 버전부터 지원한다고 한다.[링크](https://intellij-support.jetbrains.com/hc/en-us/community/posts/13049784815250-Planned-release-date-of-2023-3-with-Java-21-support))
+다음으로 `가상 스레드` 를 사용하는 코드를 작성해보자. IntelliJ 에서는 2023.2.3 이상부터 Java 21 을 지원하기 때문에 버전을 꼭 확인하자.
+새로운 프로젝트를 만들고 JDK 21 을 지정한다. 
+{{< imageFull src="/images/posts/java/virtual-thread/intellij-new-project.png" title="IntelliJ New Project" border="false" >}}
+
+이제 아래와 같이 Main.java 파일을 작성하자.
 
 ```java
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class Main {
     public static void main(String[] args) throws Exception {
         run();
@@ -192,11 +239,30 @@ public class Main {
 }
 ```
 
+이제 Main.java 를 실행해보자. 다음과 같은 결과를 확인할 수 있다. 
+
+```bash
+Hello Virtual Thread
+Hi Virtual Thread
+Hi Virtual Thread
+Thread is Virtual? true
+Hi Virtual Thread
+Hi Virtual Thread
+Hi Virtual Thread
+```
+
+만약에러가 발생하면 Project Structure, Java Compiler 설정을 꼭 확인하자.
+{{< imageFull src="/images/posts/java/virtual-thread/intellij-project-structure.png" title="IntelliJ Project Setting" border="false" >}}
+
+{{< imageFull src="/images/posts/java/virtual-thread/intellij-java-compiler-setting.png" title="IntelliJ Java Compiler" border="false" >}}
+
+IntelliJ 를 사용하지 않고 커맨드라인에서 실행하면 다음과 같다.
+
 ```bash
 $ java --version
-openjdk 21-ea 2023-09-19
-OpenJDK Runtime Environment (build 21-ea+18-1480)
-OpenJDK 64-Bit Server VM (build 21-ea+18-1480, mixed mode, sharing)
+openjdk 21.0.1 2023-10-17
+OpenJDK Runtime Environment (build 21.0.1+12-29)
+OpenJDK 64-Bit Server VM (build 21.0.1+12-29, mixed mode, sharing)
 $ javac Main.java
 $ ls
 Main.class Main.java
@@ -215,6 +281,9 @@ Hi Virtual Thread
 
 
 ```java
+import java.time.Duration;
+import java.util.concurrent.Executors;
+
 public class Main {
     public static void main(String[] args) throws Exception {
         run();
@@ -240,23 +309,16 @@ public class Main {
 }
 ```
 
-마찬가지로 cli 에서 실행해보았다.
+실행결과는 다음과 같다.
 
 ```bash
-$ java --version
-openjdk 21-ea 2023-09-19
-OpenJDK Runtime Environment (build 21-ea+18-1480)
-OpenJDK 64-Bit Server VM (build 21-ea+18-1480, mixed mode, sharing)
-$ javac Main.java
-$ ls
-Main.class Main.java
-$ java Main
-2550ms
-2562ms
-2073ms
-2089ms
-2102ms
-2099ms
+2542ms
+2590ms
+2092ms
+2129ms
+2125ms
+2094ms
+2101ms
 ```
 
 결과를 보면 알 수 있지만 2초에 가까운 시간이 출력된다. `Thread.sleep` 에 의해서 Blocking 되었지만 내부 `가상 스레드` 스케줄러에 의해서 
@@ -282,16 +344,18 @@ $ java Main
 
 ### 소감
 
-`가상 스레드` 를 알아보면서 Java 21 버전이 기대되기 시작했다. 더욱이 **Java 21** 버전이 **LTS** (Long Term Support)로 출시되기 때문에 
+`가상 스레드` 를 알아보면서 Java 21 버전을 사용한 애플리케이션 코드작성이 기대되기 시작했다. 더욱이 **Java 21** 버전이 **LTS** (Long Term Support)로 출시되기 때문에 
 새로운 프로젝트들은 Java 21 을 기반으로 시작한다면 `가상 스레드`의 이점을 적용할 수 있을 것이다. 그리고 기존 프로젝트들도 높은 처리량(throughput)을 필요로 하는 경우에
 사용하는 Java 버전업을 고려해볼만 하다고 생각된다. 
 
 자료를 정리하면서 **Project Loom** 에서 `가상 스레드` 기능을 구현하기까지 5년 넘게 개발했다는 것을 알게되었다. 기존의 스레드 사용성을 해치지 않으면서도
 단점만을 개선한 `가상 스레드` 를 내놓기 까지 얼마나 많은 고민을 했을까 생각해았다. 쉽지 않은 일이었을텐데 결국 이렇게 Java 21에 포함되는 기능을 내놓은 것이 대단하다고 느껴졌다.
 
-
 내용이 길어져 다음 글에서 실제 Spring Boot 에 `가상 스레드` 적용한뒤 실제로 기존 **스레드 풀** 방식과 비교하여 처리량이 늘어나는지, 그리고 `가상 스레드`를 사용할 때 주의해야할 점에 대해서 추가 내용을 정리해보겠다. 
 
+* 시리즈
+   - [Virtual Thread란 무엇일까? (1)](/2023/04/17/java-virtual-threads-1)
+   - [Virtual Thread란 무엇일까? (2)](/2023/07/02/java-virtual-threads-2)
 
 ### 참고 자료
 - https://openjdk.org/jeps/444
