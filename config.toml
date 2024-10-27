@@ -2,11 +2,15 @@ baseurl = "https://findstar.pe.kr"
 title = "Soo Story"
 theme = "cleanwhite"
 languageCode = "ko-kr"
-disqusShortname = "findstar"
-googleAnalytics = "G-SRRG0R99Y8"
 preserveTaxonomyNames = true
 paginate = 5 #frontpage pagination
 hasCJKLanguage = true
+
+[services]
+  [services.disqus]
+    shortname = 'findstar'
+  [services.googleAnalytics]
+    id = 'G-SRRG0R99Y8'
 
 [outputs]
 home = ["HTML", "RSS", "JSON"]

@@ -7,7 +7,7 @@
 {{ partial "meta/twitter.html" . }}
 {{ partial "meta/article.html" . }}
 {{ partial "favicon.html" . }}
-{{ if .Site.GoogleAnalytics }}
+{{ if .Site.Config.Services.GoogleAnalytics.ID }}
 {{ partial "meta/ga.html" . }}
 {{ end }}
 {{ partial "meta/adsense.html" . }}
