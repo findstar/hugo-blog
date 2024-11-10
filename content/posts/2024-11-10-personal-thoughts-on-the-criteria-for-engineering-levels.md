@@ -1,7 +1,7 @@
 ---
 date: '2024-11-10 18:50:01 +09:00'
 group: blog
-image: /images/posts/hedgehog-expansion/hedgehog-sharp-style-expansion.png
+image: /images/posts/engineering-level/sr-dev.png
 tags: ["product strategy", "hedgehog sharp", "portfolio expansion", "adaptive growth"]
 title: "내맘대로 나눠본 엔지니어 레벨의 기준" 
 url: /2024/11/10/personal-thoughts-on-the-criteria-for-engineering-levels
